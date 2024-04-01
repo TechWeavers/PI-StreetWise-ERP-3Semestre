@@ -1,2 +1,3 @@
 # PI-StreetWise-ERP-3Semestre
 Este é um projeto de um sistema de gerenciamento para estúdios de tatuagem feito com Python (FastAPI) e Javascript (React), utilizando banco de dados não-relacional, e arquitetura orientada a microsserviços
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
