@@ -18,8 +18,6 @@ ex: userRoute -> contém todas as rotas que serão enviadas para fazer CRUD de u
 
 services: implementação de serviços exteriores que serão utilizados no projeto, como serviço de email e Google Agenda
 
-Dentro da pasta routes, há os serviços com suas repectivas rotas, importante ressaltar que cada serviço será uma API rodando em um endereço diferente, ex: O serviço de usuários, como CRUD, e login, será o arquivo "userRoute" que se encontra dentro da pasta routes, sendo assim, todas as requisições que serão enviadas para o serviço de usuários, será direcionado para o arquivo userRoute, O mesmo usará um arquivo que servirá de modelo de validação de dados, o "userModel", dentro da pasta Models, e o serviço também deverá chamar dentro de suas rotas, um arquivo de controller chamado "Controller_user", dentro da pasta de Controllers, para realizar a lógica de negócio da entidade Usuário, como operações básicas de CRUD.
+Ex: todas as requisições que serão enviadas para o serviço de usuários, será direcionado para o arquivo userRoute, O mesmo usará um arquivo que servirá de modelo de validação de dados dos usuários, o "userModel" dentro da pasta Models, e o serviço também deverá chamar dentro de suas rotas, um arquivo de controller chamado "Controller_user" dentro da pasta de Controllers, para realizar a lógica de negócio da entidade Usuário, arquivo este que chama a conexão com o banco de dados e realiza operações no banco, como operações básicas de CRUD.
 
-O projeto também contém uma pasta de configs, para configurações de possíveis subsistemas, como o banco de dados MongoDB, já implementado.
 
-Há também uma pasta chamada "services" para implementação de outros módulos e APIS exteriores que serão consumidas na aplicação, como o serviço de email, que terá sua própria lógica de negócio
