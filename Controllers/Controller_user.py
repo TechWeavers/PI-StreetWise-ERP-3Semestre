@@ -48,7 +48,17 @@ def getUser(email):
     return user_finded
   except TypeError as erro:
     return{"erro ao buscar usuário: ":erro}
+
+def getUserbyUsername(username):
+  try:
+    user_finded = [user for user in collection.find({"username":username})]
+    for user in user_finded:
+      user["_id"] = str(user["_id"])
   
+    return user_finded
+  except TypeError as erro:
+    return{"erro ao buscar usuário: ":erro}
+
 def editUser(email):
   try:
     user  = collection.find({"email":email})
