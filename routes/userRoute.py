@@ -27,7 +27,7 @@ async def editarUsuario(email:str):
 @userAPI.patch("/atualizar-usuario/{email}", tags=["usuarios"]) 
 async def atualizarUsuario(user:User,email:str):
      return updateUser(dict(user),email)
-# atualiza o usuario passando o parametro de busca pela URL, e chama a função de update
+# atualiza o usuario passando o parametro de busca pela URL, e chama a função de update, enviando os dados de atualização no corpo da requisição
 
 @userAPI.delete("/deletar-usuario/{email}", tags=["usuarios"])
 async def excluirUsuarios(email:str):

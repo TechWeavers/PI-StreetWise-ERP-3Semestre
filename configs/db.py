@@ -3,6 +3,7 @@ from pymongo import MongoClient
 def create_mongodb_connection(connection_string, database_name):
     client = MongoClient(connection_string)
     db = client[database_name]
+    print(db)
     return db
 
 
