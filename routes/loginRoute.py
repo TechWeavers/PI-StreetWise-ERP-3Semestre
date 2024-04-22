@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, status
+from typing import Annotated
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext # type: ignore
@@ -49,4 +50,12 @@ async def read_users_me(
 
 @app.get("/produto")
 async def obterProduto(token: str = Depends(oauth2_scheme)):
-    return {"produto": {"nome": "mouse", "preço": 200}}
+     # Verifica se o token é válido e obtém os dados do usuário
+    user = await get_current_user(token)
+    print(user)
+    
+    # Se o token for válido, retorna os dados do produto
+    if user:
+        return {"produto": {"nome": "mouse", "preço": 200}}
+    else:
+        return{"message":"nao autorizado"}

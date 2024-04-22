@@ -28,7 +28,7 @@ def authenticate_user(username:str, password:str): # autenticar e retornar um us
     if not user:
         return False
     print(user["password"])
-    if not verify_password(user["password"], user.hashed(password)):
+    if not verify_password(password, user["password"]):
         return False
     return user
 
@@ -49,7 +49,7 @@ def get_user (username: str):
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto") # contexto passlib para fazer hash e verificação de senhas
 
 def verify_password(plain_password, hashed_password): # verificar se a senha recebida corresponde ao hash armazenado
-    return pwd_context.verify(plain_password, hashed_password)
+    return pwd_context.verify(plain_password, get_password_hash(hashed_password))
 
 def get_password_hash(password): # fazer hash de uma senha vinda do usuário
     return pwd_context.hash(password)
