@@ -8,7 +8,7 @@ class Login {
         return `
             <div class="telaLogin">
                 <h2>Login</h2>
-                <form id="login-form">
+                <form id="login-form" action="/login" method="post">
                     <input type="text" id="username" placeholder="Usuário" required>
                     <input type="password" id="password" placeholder="Senha" required>
                     <button type="submit">Entrar</button>
