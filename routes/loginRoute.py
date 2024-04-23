@@ -24,7 +24,7 @@ collection = db[collection_name]  # todas as operações de usuários podem usar
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")  # contexto passlib para fazer hash e verificação de senhas
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-@app.post("/token")
+@app.post("/login")
 async def login_for_access_token(user_data: User) -> Token:
     print(user_data.username)
     print(user_data.password)
@@ -39,7 +39,7 @@ async def login_for_access_token(user_data: User) -> Token:
     access_token = create_access_token(
         data={"sub": user_data.username}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer")
+    return Token(access_token=access_token, token_type="JWT")
 
 
 @app.get("/users/me")
