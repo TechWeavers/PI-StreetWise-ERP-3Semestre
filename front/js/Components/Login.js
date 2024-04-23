@@ -1,7 +1,10 @@
+import PasswordRecovery from './PasswordRecovery.js';
+
 class Login {
     constructor(fetchService, renderCallback) {
         this.fetchService = fetchService;
         this.renderApp = renderCallback;
+        this.passwordRecovery = new PasswordRecovery(this.fetchService, () => this.fetchItems());
     }
 
     render() {
@@ -13,6 +16,7 @@ class Login {
                     <input type="password" id="password" placeholder="Senha" required>
                     <button type="submit">Entrar</button>
                 </form>
+                <button class="rec" id="esqueceu" type="button">Esqueceu a senha?</button>
             </div>
             <style>
             body {
@@ -24,6 +28,10 @@ class Login {
                 justify-content: center;
                 align-items: center;
                 height: 100vh;
+            }
+
+            .rec{
+                margin-top: 5px;
             }
             
             .login-container {
@@ -60,14 +68,20 @@ class Login {
             button:hover {
                 background-color: #0056b3;
             }
+
             
             </style>
             
-      `;
+        `;
     }
 
     afterRender() {
+        document.getElementById('esqueceu').addEventListener('click', () => this.openModal()); 
         document.getElementById('login-form').addEventListener('submit', (e) => this.login(e));
+    }
+
+    openModal() {
+        this.passwordRecovery.openModal();
     }
 
     async login(event) {
@@ -76,6 +90,7 @@ class Login {
         const password = document.getElementById('password').value;
         if (!username || !password) {
             alert('Campos vazios');
+            return; // Adicionado para evitar a execução adicional do código
         }
 
         await this.fetchService.fetch('/login', {

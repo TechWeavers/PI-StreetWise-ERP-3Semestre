@@ -1,5 +1,5 @@
 import FetchService from './Components/FetchService.js';
-import ItemForm from './Components/ItemForm.js';
+import PasswordRecovery from './Components/PasswordRecovery.js';
 import Login from './Components/Login.js'
 
 class App {
@@ -12,19 +12,19 @@ class App {
 
     initApp() {
         this.login = new Login(this.fetchService, () => this.fetchItems());
+        this.PasswordRecovery = new PasswordRecovery(this.fetchService, () => this.fetchItems());
         this.appElement.innerHTML = `
         <div class="panel">
             <div id="login"></div>
+            <div id="PasswordRecovery"></div>
         </div>
         `;
 
         this.render('login', this.login.render());
         this.login.afterRender();
-    }
 
-    dadosLogin(login) {
-        document.getElementById('username').value = login.username;
-        document.getElementById('password').value = login.password;
+        this.afterRender();
+
     }
 
     render(elementId, html) {
@@ -34,6 +34,10 @@ class App {
         }
     }
 
+    async afterRender() {
+        document.getElementById('esqueceu').addEventListener('submit', (e) => PasswordRec.openModal(e));
+    }
+    
 
 
 }
