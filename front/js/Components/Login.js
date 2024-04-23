@@ -78,7 +78,7 @@ class Login {
             alert('Campos vazios');
         }
 
-        await this.fetchService.fetch('/token', {
+        await this.fetchService.fetch('/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({username, password}),
