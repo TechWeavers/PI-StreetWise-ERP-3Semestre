@@ -22,7 +22,7 @@ collection_name = "users"
 db = create_mongodb_connection(connection_string, database_name)
 collection = db[collection_name] # todas as operações de usuarios podem usar essa collection
 
-
+# valida o usuário no banco de dados e retorna ele
 def authenticate_user(username:str, password:str): # autenticar e retornar um usuário
     user = get_user(username)
     if not user:
@@ -46,7 +46,8 @@ def get_user (username: str):
         print(f"Erro ao buscar usuário no MongoDB")
         return None
 
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto") # contexto passlib para fazer hash e verificação de senhas
+# configurações do serviço de criptografia
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # contexto passlib para fazer hash e verificação de senhas
 
 def verify_password(plain_password, hashed_password): # verificar se a senha recebida corresponde ao hash armazenado
     return pwd_context.verify(plain_password, get_password_hash(hashed_password))
@@ -54,7 +55,7 @@ def verify_password(plain_password, hashed_password): # verificar se a senha rec
 def get_password_hash(password): # fazer hash de uma senha vinda do usuário
     return pwd_context.hash(password)
 
-
+# configs do token
 class Token(BaseModel):
     access_token:str
     token_type:str
@@ -62,6 +63,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: str | None = None
 
+# verifica se o token já expirou, e se já, cria um novo token
 def create_access_token(data:dict, expires_delta: timedelta | None = None): 
     to_encode = data.copy()
     if expires_delta:
@@ -71,9 +73,9 @@ def create_access_token(data:dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-# verifica se o token já expirou, e se já, cria um novo token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 # recebe um token jwt
 # decodifica o token, verifica e retorna o usuário atual
@@ -90,8 +92,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
+    except JWTError as erro:
+        raise {"error": credentials_exception, "message":erro}
     user = get_user(collection, username=token_data.username)
     if user is None:
         raise credentials_exception

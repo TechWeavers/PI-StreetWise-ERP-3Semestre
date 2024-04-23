@@ -32,7 +32,8 @@ collection = db[collection_name]  # todas as operações de usuários podem usar
 
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")  # contexto passlib para fazer hash e verificação de senhas
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 @app.post("/login")
@@ -51,7 +52,7 @@ async def login_for_access_token(user_data: User) -> Token:
     access_token = create_access_token(
         data={"sub": user_data.username}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="JWT")
+    return  Token(access_token=access_token, token_type="JWT")
 
 
 @app.get("/users/me")
@@ -61,13 +62,13 @@ async def read_users_me(
     return current_user
 
 @app.get("/produto")
-async def obterProduto(token: str = Depends(oauth2_scheme)):
+async def obterProduto(token: str = Depends(get_current_user)):
     # Verifica se o token é válido e obtém os dados do usuário
-    user = await get_current_user(token)
-    print(user)
+    # user = await get_current_user(token)
+    # print(user)"""
     
     # Se o token for válido, retorna os dados do produto
-    if user:
+    if token:
         return {"produto": {"nome": "mouse", "preço": 200}}
     else:
         return{"message":"nao autorizado"}
