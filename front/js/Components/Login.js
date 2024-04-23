@@ -8,7 +8,7 @@ class Login {
         return `
             <div class="telaLogin">
                 <h2>Login</h2>
-                <form id="login-form" action="/login" method="post">
+                <form id="login-form">
                     <input type="text" id="username" placeholder="Usuário" required>
                     <input type="password" id="password" placeholder="Senha" required>
                     <button type="submit">Entrar</button>
@@ -78,7 +78,7 @@ class Login {
             alert('Campos vazios');
         }
 
-        await this.fetchService.fetch('/token', {
+        await this.fetchService.fetch('/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({username, password}),
