@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from typing import List
 from fastapi import BackgroundTasks, FastAPI
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
@@ -12,14 +13,14 @@ class EmailSchema(BaseModel):
 # configurações de conexão com o email, está com bug na senha, que deve ser gerada pelo gmail
 conf = ConnectionConfig(
     MAIL_USERNAME ="sixdevsfatec@gmail.com",
-    MAIL_PASSWORD = "9243 2979",
+    MAIL_PASSWORD = "uzkh ccst nuza pkew",
     MAIL_FROM = "sixdevsfatec@gmail.com",
-    MAIL_PORT = 465,
+    MAIL_PORT = 587,
     MAIL_SERVER = "smtp.gmail.com",
-    MAIL_STARTTLS = False,
-    MAIL_SSL_TLS = True,
+    MAIL_STARTTLS = True,
+    MAIL_SSL_TLS = False,
     USE_CREDENTIALS = True,
-    VALIDATE_CERTS = True
+    VALIDATE_CERTS = False
 )
 
 app = FastAPI()
@@ -37,8 +38,14 @@ async def simple_send(email: EmailSchema) -> JSONResponse:
         subject="Fastapi-Mail module",
         recipients= dict(email).get("email"),
         body=html,
-        subtype=MessageType.html)
+        subtype=MessageType.html
+        )
 
     fm = FastMail(conf)
-    await fm.send_message(message)
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})  
+    print("passou")
+    try:
+        print("tentando")
+        await fm.send_message(message)
+    except Exception as e:
+        raise HTTPException(500, "Erro ao enviar o email")
+    return {"message": "Email enviado com sucesso"}
