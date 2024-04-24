@@ -1,10 +1,19 @@
 from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from models.userModel import User
 #importando controllers
-from Controllers.Controller_user import insertUser,getAllUsers,getUser,deleteUser,updateUser
+from controllers.Controller_user import insertUser,getAllUsers,getUser,deleteUser,updateUser
 
 app = FastAPI()
 userAPI = APIRouter()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 @userAPI.post("/novo-usuario", tags=["usuarios"])
 async def createUser(user:User):
