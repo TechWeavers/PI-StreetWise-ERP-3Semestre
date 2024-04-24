@@ -8,6 +8,7 @@ from jose import JWTError, jwt
 from models.userModel import User
 from configs.db import create_mongodb_connection
 from services.Auth import Token, TokenData, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, create_access_token, get_current_user
+from Controllers.Controller_login import LoginController
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -38,11 +39,13 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 @app.post("/login")
-async def login_for_access_token(user_data: User) -> Token:
+async def login_for_access_token(user_data: User) :
 
+    controller = LoginController()
     print(user_data.username)
     print(user_data.password)
-    user = authenticate_user(user_data.username, user_data.password)
+    return controller.login(user_data.username, user_data.password)
+    """ user = authenticate_user(user_data.username, user_data.password)
     print(user)
     
     #Caso o usuário não seja encontrado
@@ -57,7 +60,7 @@ async def login_for_access_token(user_data: User) -> Token:
     access_token = create_access_token(
         data={"sub": user_data.username}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="JWT")
+    return  Token(access_token=access_token, token_type="JWT")
 
 
 @app.get("/users/me")
