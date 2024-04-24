@@ -9,18 +9,19 @@ from models.userModel import User
 from configs.db import create_mongodb_connection
 from services.Auth import Token, TokenData, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, create_access_token, get_current_user
 
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 userAPI = APIRouter()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
 database_name = "streetwise_db"
@@ -42,12 +43,16 @@ async def login_for_access_token(user_data: User) -> Token:
     print(user_data.username)
     print(user_data.password)
     user = authenticate_user(user_data.username, user_data.password)
+    print(user)
+    
+    #Caso o usuário não seja encontrado
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user_data.username}, expires_delta=access_token_expires

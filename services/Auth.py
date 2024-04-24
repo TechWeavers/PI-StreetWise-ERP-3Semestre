@@ -27,9 +27,12 @@ def authenticate_user(username:str, password:str): # autenticar e retornar um us
     user = get_user(username)
     if not user:
         return False
-    print(user["password"])
+    print("Achou o usuário")
+
     if not verify_password(password, user["password"]):
+        print("A senha está errada")
         return False
+    print("A senha está certa")
     return user
 
 
@@ -38,12 +41,12 @@ def get_user (username: str):
         user = collection.find_one({"username":username})
         print(username)
         if user:
-            print(user)
             return user
         else:
-            return {"message":"usuario nao localizado"}
+            print("usuario nao localizado")
+            return None
     except:
-        print(f"Erro ao buscar usuário no MongoDB")
+        print("Erro ao buscar usuário no MongoDB")
         return None
 
 # configurações do serviço de criptografia
