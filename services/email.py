@@ -5,11 +5,11 @@ from pydantic import BaseModel, EmailStr
 from starlette.responses import JSONResponse
 
 
-
+# modelo de email a ser enviado
 class EmailSchema(BaseModel):
     email: List[EmailStr]
 
-
+# configurações de conexão com o email, está com bug na senha, que deve ser gerada pelo gmail
 conf = ConnectionConfig(
     MAIL_USERNAME ="sixdevsfatec@gmail.com",
     MAIL_PASSWORD = "9243 2979",
@@ -24,12 +24,12 @@ conf = ConnectionConfig(
 
 app = FastAPI()
 
-
+# mensagem enviada no email
 html = """
 <p>Thanks for using Fastapi-mail</p> 
 """
 
-
+# rota que chama a função que envia o email
 @app.post("/email")
 async def simple_send(email: EmailSchema) -> JSONResponse:
 

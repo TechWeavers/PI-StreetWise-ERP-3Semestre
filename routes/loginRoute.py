@@ -57,7 +57,7 @@ async def login_for_access_token(user_data: User) -> Token:
     access_token = create_access_token(
         data={"sub": user_data.username}, expires_delta=access_token_expires
     )
-    return  Token(access_token=access_token, token_type="JWT")
+    return Token(access_token=access_token, token_type="JWT")
 
 
 @app.get("/users/me")
