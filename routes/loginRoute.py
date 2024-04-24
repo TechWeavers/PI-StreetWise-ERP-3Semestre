@@ -64,6 +64,7 @@ async def login_for_access_token(user_data: User) -> Token:
 async def read_users_me( current_user: Annotated[User, Depends(get_current_user  )]):
     return current_user
 
+# rota de teste como rota protegida   
 @app.get("/produto")
 async def obterProduto(token: str = Depends(get_current_user)):
     # Verifica se o token é válido e obtém os dados do usuário
