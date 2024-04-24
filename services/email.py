@@ -27,7 +27,18 @@ app = FastAPI()
 
 # mensagem enviada no email
 html = """
-<p>Thanks for using Fastapi-mail</p> 
+    <h1>Olá, username</h1>
+    <p>Recebemos recentemente um pedido de recuperação de senha da sua conta cadastrada na InkHouse</p>
+    <br>
+    <p>Se você não solicitou esse email de redefinição de senha, não precisa se preucupar</p>
+    <p>Basta ignorar esse email</p> 
+    <br>
+    <p>Clique no link abaixo para redefinir sua senha:</p>
+    <p><a href="https://example.com/redefinir-senha">Link para redefinição de senha</a></p>
+    <br>
+    <p>Este é um email automático, não é preciso responder &#128521;</p>
+    <p>Atenciosamente,</p>
+    <p>Equipe da InkHouse</p>
 """
 
 # rota que chama a função que envia o email
@@ -35,7 +46,7 @@ html = """
 async def simple_send(email: EmailSchema) -> JSONResponse:
 
     message = MessageSchema(
-        subject="Fastapi-Mail module",
+        subject="Recuperação de Senha - InkHouse",
         recipients= dict(email).get("email"),
         body=html,
         subtype=MessageType.html
