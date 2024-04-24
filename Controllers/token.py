@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import jwt
+import jwt 
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 
@@ -21,7 +21,7 @@ class Token:
     def gerar_token(self, id: str) -> str:
         payload = {
             'sub': id,
-            'exp': datetime.now(datetime) + timedelta(days=1) 
+            'exp': datetime.now() + timedelta(days=1) 
         }
         jwt_token = jwt.encode(payload, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return jwt_token
