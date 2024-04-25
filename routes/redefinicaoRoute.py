@@ -1,8 +1,5 @@
 from http.client import HTTPException
-from typing import List
-from fastapi import BackgroundTasks, FastAPI
-from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import BaseModel, EmailStr
+from fastapi import FastAPI
 from starlette.responses import JSONResponse
 from services.email import EmailSchema, emailEsqueceuSenha
 from Controllers.Controller_user import getUser
