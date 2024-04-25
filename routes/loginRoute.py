@@ -42,8 +42,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 async def login_for_access_token(user_data: User) :
 
     controller = LoginController()
-    return controller.login(user_data.username, user_data.password)
-    """ user = authenticate_user(user_data.username, user_data.password)
+    #return controller.login(user_data.username, user_data.password)
+    user = authenticate_user(user_data.username, user_data.password)
     print(user)
     
     #Caso o usuário não seja encontrado
@@ -58,7 +58,7 @@ async def login_for_access_token(user_data: User) :
     access_token = create_access_token(
         data={"sub": user_data.username}, expires_delta=access_token_expires
     )
-    return  Token(access_token=access_token, token_type="JWT")"""
+    return  Token(access_token=access_token, token_type="JWT")
 
 
 @app.get("/users/me")

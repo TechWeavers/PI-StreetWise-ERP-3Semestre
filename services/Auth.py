@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from models.userModel import User
+import hashlib
 from configs.db import create_mongodb_connection
 
 
@@ -24,22 +25,32 @@ collection = db[collection_name] # todas as operações de usuarios podem usar e
 
 # valida o usuário no banco de dados e retorna ele
 def authenticate_user(username:str, password:str): # autenticar e retornar um usuário
-    user = get_user(username)
+    user = get_user(username, password)
     if not user:
         return False
     print("Achou o usuário")
 
-    if not verify_password(password, user["password"]):
+    senha_armazenada = user["password"]
+    print(senha_armazenada)
+    senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
+    print(senha_criptografada)
+            
+    if senha_armazenada == senha_criptografada:
+        return user
+
+    """if not verify_password(password, user["password"]):
         print("A senha está errada")
         return False
-    print("A senha está certa")
-    return user
+    print("A senha está certa")"""
+            
 
 
-def get_user (username: str):
+def get_user (username: str, password:str):
+    senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
     try:
-        user = collection.find_one({"username":username})
+        user = collection.find_one({"username":username, "password":senha_criptografada})
         print(username)
+        print(password)
         if user:
             return user
         else:
