@@ -18,8 +18,6 @@ class LoginController:
     def __init__(self):
         pass
         
-        
-
     def get_user(self, username: str):
         try:
             user = collection.find_one({"username":username})
@@ -42,17 +40,20 @@ class LoginController:
         #user_agent = request.headers.get("user-agent")
        # client_ip = request.client.host
         usuario = self.get_user(user)
+        username = usuario["username"]
+        print(username)
         if usuario:
             senha_armazenada = usuario["password"]
             print(senha_armazenada)
             senha_criptografada = hashlib.sha256(senha.encode()).hexdigest()
             print(senha_criptografada)
-
+            
             if senha_armazenada == senha_criptografada:
-                jwt = jwt_token.gerar_token(usuario['_id']) 
-                print(jwt)
-                return [True ,jwt,usuario]
-        return False
+                jwt = jwt_token.criarToken(username) 
+                #print(jwt)
+                return [True,jwt,usuario]
+        else:
+            return False
 
     def user_id(self, token: str):
         jwt_token = Token() 
