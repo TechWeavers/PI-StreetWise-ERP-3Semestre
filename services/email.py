@@ -71,4 +71,31 @@ async def emailEsqueceuSenha(user: User):
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
 
+async def senhaRedefinida(user: User): 
+    try:
+        emailusuario = user["email"]
+        html = """
+            <h1>Olá, {username}</h1>
+            <p>Sua senha foi redefinida com sucesso</p>
+            <p>Basta utilizar a nova senha cadastrada no link que te enviamos anteriormente</p> 
+            <br>
+            <p>Ps: Não esqueça de nunca compartilhar as suas senhas com ninguém.</p>
+            <br>
+            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+            <p>Atenciosamente,</p>
+            <p>Equipe da InkHouse</p>
+        """.format(username=user["username"])
+
+        message = MessageSchema(
+            subject="A redefinição de senha foi um sucesso! - InkHouse",
+            recipients=[emailusuario],
+            body=html,
+            subtype=MessageType.html
+        )
+
+        # Envio do e-mail
+        await fm.send_message(message)
+    except Exception as e:
+        # Tratamento de exceções
+        print("Erro ao enviar e-mail:", e)
 

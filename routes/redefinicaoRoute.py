@@ -32,3 +32,7 @@ async def esqueceuSenha(email: EmailSchema) -> JSONResponse:
         raise HTTPException(500, f"Erro ao enviar o e-mail: {str(e)}")
 
     return {"message": "E-mail enviado com sucesso"}
+
+#@app.post("/RedefinirSenha")
+
+    
