@@ -29,7 +29,6 @@ async def esqueceuSenha(email: EmailSchema) -> JSONResponse:
 
             for user in users:
                 await emailEsqueceuSenha(user)
-                print("a")
     except HTTPException as http_exception:
         raise http_exception
     except Exception as e:
