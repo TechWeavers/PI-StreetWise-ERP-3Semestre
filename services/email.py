@@ -39,11 +39,11 @@ conf = ConnectionConfig(
 @app.post("/email")
 async def simple_send(email: EmailSchema) -> JSONResponse:
     try:
-        for recipient_email in email.email:
-            users = getUser(recipient_email)  # Obtenha os usuários correspondentes ao e-mail
+        for emailusuario in email.email:
+            users = getUser(emailusuario)
             if not users:
                 # Se nenhum usuário for encontrado para o e-mail, retorne uma mensagem de erro
-                raise HTTPException(404, f"Usuário não encontrado para o e-mail: {recipient_email}")
+                raise HTTPException(404, f"Usuário não encontrado para o e-mail: {emailusuario}")
 
             for user in users:
                 # Construa o template de e-mail HTML com os dados do usuário
@@ -64,7 +64,7 @@ async def simple_send(email: EmailSchema) -> JSONResponse:
 
                 message = MessageSchema(
                     subject="Recuperação de Senha - InkHouse",
-                    recipients=[recipient_email],
+                    recipients=[emailusuario],
                     body=html,
                     subtype=MessageType.html
                 )
