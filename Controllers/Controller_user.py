@@ -2,6 +2,7 @@ from configs.db import create_mongodb_connection
 from models.userModel import User
 from fastapi import HTTPException
 from bson import json_util  # Importe o módulo bson
+import hashlib
 
 
 # Configurações de conexão com o MongoDB
@@ -16,12 +17,15 @@ collection = db[collection_name] # todas as operações de usuarios podem usar e
 #insere um novo usuário no banco
 def insertUser(user:User)->dict:
   try:
+    # Criptografando a senha antes de inserir no banco de dados
+    senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
+    user.password = senha_criptografada
     collection.insert_one(dict(user))
-    return {"message":"usuário cadastrado com sucesso","data":user}
+    return {"message": "Usuário cadastrado com sucesso", "data": user}
   except TypeError as erro:
-    return{"message":"erro ao cadastrar usuário","erro":str(erro)}
-  except HTTPException(status_code=404,detail="Dados inválidos para cadastro") as error_http:
-    return{"erro HTTP":error_http}
+    return {"message": "Erro ao cadastrar usuário", "erro": str(erro)}
+  except HTTPException(status_code=404, detail="Dados inválidos para cadastro") as error_http:
+    return {"erro HTTP": error_http}
   
 
 #obtém todos os usuários

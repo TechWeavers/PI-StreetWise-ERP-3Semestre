@@ -42,11 +42,12 @@ class LoginController:
         #user_agent = request.headers.get("user-agent")
        # client_ip = request.client.host
         usuario = self.get_user(user)
-        print(usuario)
         if usuario:
             senha_armazenada = usuario["password"]
             print(senha_armazenada)
             senha_criptografada = hashlib.sha256(senha.encode()).hexdigest()
+            print(senha_criptografada)
+
             if senha_armazenada == senha_criptografada:
                 jwt = jwt_token.gerar_token(usuario['_id']) 
                 print(jwt)
