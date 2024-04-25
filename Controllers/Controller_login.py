@@ -1,7 +1,7 @@
 from models.userModel import User
 import hashlib
-from controllers.token import Token
-from controllers.Controller_user import getUser
+from Controllers.token import Token
+from Controllers.Controller_user import getUser
 from fastapi import Request
 from configs.db import  create_mongodb_connection
 

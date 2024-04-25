@@ -8,7 +8,7 @@ from jose import JWTError, jwt
 from models.userModel import User
 from configs.db import create_mongodb_connection
 from services.Auth import Token, TokenData, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, create_access_token, get_current_user
-from controllers.Controller_login import LoginController
+from Controllers.Controller_login import LoginController
 
 from fastapi.middleware.cors import CORSMiddleware
 
