@@ -42,8 +42,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 async def login_for_access_token(user_data: User) :
 
     controller = LoginController()
-    print(user_data.username)
-    print(user_data.password)
     return controller.login(user_data.username, user_data.password)
     """ user = authenticate_user(user_data.username, user_data.password)
     print(user)
