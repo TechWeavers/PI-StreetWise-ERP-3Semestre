@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models.userModel import User
 #importando controllers
-from controllers.Controller_user import insertUser,getAllUsers,getUser,deleteUser,updateUser
+from Controllers.Controller_user import insertUser,getAllUsers,getUser,deleteUser,updateUser
 
 app = FastAPI()
 userAPI = APIRouter()

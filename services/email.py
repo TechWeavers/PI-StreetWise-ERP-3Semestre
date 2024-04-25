@@ -5,6 +5,17 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, EmailStr
 from starlette.responses import JSONResponse
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 # modelo de email a ser enviado
 class EmailSchema(BaseModel):
@@ -23,10 +34,11 @@ conf = ConnectionConfig(
     VALIDATE_CERTS = False
 )
 
-app = FastAPI()
+# rota que chama a função que envia o email
+@app.post("/email")
+async def simple_send(email: EmailSchema) -> JSONResponse:
 
-# mensagem enviada no email
-html = """
+    html = """
     <h1>Olá, username</h1>
     <p>Recebemos recentemente um pedido de recuperação de senha da sua conta cadastrada na InkHouse</p>
     <br>
@@ -39,12 +51,8 @@ html = """
     <p>Este é um email automático, não é preciso responder &#128521;</p>
     <p>Atenciosamente,</p>
     <p>Equipe da InkHouse</p>
-"""
-
-# rota que chama a função que envia o email
-@app.post("/email")
-async def simple_send(email: EmailSchema) -> JSONResponse:
-
+    """
+    
     message = MessageSchema(
         subject="Recuperação de Senha - InkHouse",
         recipients= dict(email).get("email"),
