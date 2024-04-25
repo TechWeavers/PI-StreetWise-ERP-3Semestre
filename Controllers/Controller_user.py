@@ -44,14 +44,16 @@ def getAllUsers():
 
 # por padrão pega o 1º elemento com o email especificado
 def getUser(email):
-  try:
-    user_finded = [user for user in collection.find({"email":email})]
-    for user in user_finded:
-        user["_id"] = str(user["_id"])
-  
-    return user_finded
-  except TypeError as erro:
-    return{"erro ao buscar usuário: ":erro}
+    try:
+        users = collection.find({"email": email})
+        found_users = []
+        for user in users:
+            # Convert ObjectId to string if needed
+            user["_id"] = str(user["_id"])
+            found_users.append(user)
+        return found_users
+    except Exception as e:
+        return {"error": f"Error while retrieving user: {e}"}
 
 def editUser(email):
   try:
