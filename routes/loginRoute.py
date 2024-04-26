@@ -1,10 +1,7 @@
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
 from models.userLogin import UserLogin
 from Controllers.Controller_login import LoginController
-
 
 app = FastAPI()
 userAPI = APIRouter()
@@ -16,11 +13,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
-
-#contexto passlib para fazer hash e verificação de senhas
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")  
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 @app.post("/login")
 async def login_for_access_token(user_data: UserLogin) :

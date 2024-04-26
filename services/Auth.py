@@ -1,5 +1,4 @@
 from fastapi import Depends, HTTPException, status
-from passlib.context import CryptContext
 from models.userModel import User
 import hashlib
 from configs.db import create_mongodb_connection
@@ -49,26 +48,11 @@ class Authenticator:
         if senha_armazenada == senha_criptografada:
             return user
 
-        """if not verify_password(password, user["password"]):
-            print("A senha está errada")
-            return False
-        print("A senha está certa")"""
-
-    
-    """# configurações do serviço de criptografia
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # contexto passlib para fazer hash e verificação de senhas
-
-    def verify_password(plain_password, hashed_password): # verificar se a senha recebida corresponde ao hash armazenado
-        return pwd_context.verify(plain_password, get_password_hash(hashed_password))
-
-    def get_password_hash(password): # fazer hash de uma senha vinda do usuário
-        return pwd_context.hash(password)
-
-    oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 # recebe um token jwt
 # decodifica o token, verifica e retorna o usuário atual
 # se o token for inválido, retorna um erro http
+""""
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -88,7 +72,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = get_user( username=token_data.username)
     if user is None:
         raise credentials_exception
-    return user
+    return user 
 
 # autentica o usuário no banco de dados
 #seta o tempo de expiração do token, e chama a função de criar token
