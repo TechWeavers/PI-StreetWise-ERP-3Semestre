@@ -1,9 +1,6 @@
 from fastapi import HTTPException, status, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-#import jwt 
 from jose import JWTError, jwt
 from datetime import datetime, timedelta,timezone
-from services.Auth import  Authenticator # Token, TokenData,create_access_token, get_current_user
 
 SECRET_KEY = "FPaDbtjzU9r9kziJMkkkprJ8cVcEun6QyPf8XfSRdi2DJ56a6Wwhd32u9e8hdub" #assinatura do token
 ALGORITHM = "HS256" # metodo utilizado pra codificar o token

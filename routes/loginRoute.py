@@ -2,10 +2,9 @@ from fastapi import APIRouter, Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from models.userModel import User
-from services.Auth import  Authenticator
+from models.userLogin import UserLogin
 from Controllers.Controller_login import LoginController
-from Controllers.token import ALGORITHM,SECRET_KEY,ACCESS_TOKEN_EXPIRE_MINUTES,Token
+
 
 app = FastAPI()
 userAPI = APIRouter()
@@ -24,7 +23,7 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 @app.post("/login")
-async def login_for_access_token(user_data: User) :
+async def login_for_access_token(user_data: UserLogin) :
     controller = LoginController()
     return controller.login(user_data.username, user_data.password)
     

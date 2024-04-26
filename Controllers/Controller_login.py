@@ -3,7 +3,7 @@ import hashlib
 from Controllers.token import Token
 from services.Auth import Authenticator # importa o autenticador de usuário
 from datetime import datetime, timedelta, timezone
-from Controllers.token import SECRET_KEY,ALGORITHM,ACCESS_TOKEN_EXPIRE_MINUTES,Token
+from Controllers.token import ACCESS_TOKEN_EXPIRE_MINUTES,Token
 
 class LoginController:
     def __init__(self):
