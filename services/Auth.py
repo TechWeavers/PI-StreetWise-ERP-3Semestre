@@ -1,18 +1,10 @@
 from typing import Annotated
-from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
 from passlib.context import CryptContext
-from jose import JWTError, jwt
 from models.userModel import User
 import hashlib
 from configs.db import create_mongodb_connection
-
-
-SECRET_KEY = "FPaDbtjzU9r9kziJMkkkprJ8cVcEun6QyPf8XfSRdi2DJ56a6Wwhd32u9e8hdub" #assinatura do token
-ALGORITHM = "HS256" # metodo utilizado pra codificar o token
-ACCESS_TOKEN_EXPIRE_MINUTES = 30 # tempo de expiração do token
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
@@ -23,73 +15,58 @@ collection_name = "users"
 db = create_mongodb_connection(connection_string, database_name)
 collection = db[collection_name] # todas as operações de usuarios podem usar essa collection
 
-# valida o usuário no banco de dados e retorna ele
-def authenticate_user(username:str, password:str): # autenticar e retornar um usuário
-    user = get_user(username, password)
-    if not user:
-        return False
-    print("Achou o usuário")
+class Authenticator:
+    def __init__(self):
+       pass
 
-    senha_armazenada = user["password"]
-    print(senha_armazenada)
-    senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
-    print(senha_criptografada)
-            
-    if senha_armazenada == senha_criptografada:
-        return user
-
-    """if not verify_password(password, user["password"]):
-        print("A senha está errada")
-        return False
-    print("A senha está certa")"""
-            
-
-
-def get_user (username: str, password:str):
-    senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
-    try:
-        user = collection.find_one({"username":username, "password":senha_criptografada})
-        print(username)
-        print(password)
-        if user:
-            return user
-        else:
-            print("usuario nao localizado")
+    # esta função pesquisa um usuário no banco por username e password (encriptado)
+    def get_user (self,username: str, password:str):
+        senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
+        try:
+            user = collection.find_one({"username":username, "password":senha_criptografada})
+            print(username)
+            print(password)
+            if user:
+                user['_id'] = str(user['_id'])  # Convertendo o ObjectId para string
+                return user
+            else:
+                print("usuario nao localizado")
+                return None
+        except:
+            print("Erro ao buscar usuário no MongoDB")
             return None
-    except:
-        print("Erro ao buscar usuário no MongoDB")
-        return None
+        
+    # valida o usuário no banco de dados, utilizando a função get_user e retorna ele
+    def authenticate_user(self,username:str, password:str): # autenticar e retornar um usuário
+        user = self.get_user(username, password)
+        if not user:
+            return False
+        print("Achou o usuário")
 
-# configurações do serviço de criptografia
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # contexto passlib para fazer hash e verificação de senhas
+        senha_armazenada = user["password"]
+        print(senha_armazenada)
+        senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
+        print(senha_criptografada)
+                
+        if senha_armazenada == senha_criptografada:
+            return user
 
-def verify_password(plain_password, hashed_password): # verificar se a senha recebida corresponde ao hash armazenado
-    return pwd_context.verify(plain_password, get_password_hash(hashed_password))
+        """if not verify_password(password, user["password"]):
+            print("A senha está errada")
+            return False
+        print("A senha está certa")"""
 
-def get_password_hash(password): # fazer hash de uma senha vinda do usuário
-    return pwd_context.hash(password)
+    
+    """# configurações do serviço de criptografia
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # contexto passlib para fazer hash e verificação de senhas
 
-# configs do token
-class Token(BaseModel):
-    access_token:str
-    token_type:str
+    def verify_password(plain_password, hashed_password): # verificar se a senha recebida corresponde ao hash armazenado
+        return pwd_context.verify(plain_password, get_password_hash(hashed_password))
 
-class TokenData(BaseModel):
-    username: str | None = None
+    def get_password_hash(password): # fazer hash de uma senha vinda do usuário
+        return pwd_context.hash(password)
 
-# verifica se o token já expirou, e se já, cria um novo token
-def create_access_token(data:dict, expires_delta: timedelta | None = None): 
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+    oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 # recebe um token jwt
 # decodifica o token, verifica e retorna o usuário atual
@@ -118,3 +95,4 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 # autentica o usuário no banco de dados
 #seta o tempo de expiração do token, e chama a função de criar token
 #retorna o token
+"""
