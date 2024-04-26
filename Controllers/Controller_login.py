@@ -13,8 +13,8 @@ class LoginController:
         print(user)
         print(password)
         jwt_token = Token()  
-
         auth = Authenticator()
+      
         usuario = auth.authenticate_user(user,password)
         username = usuario["username"]
         print(username)
@@ -27,7 +27,6 @@ class LoginController:
             if senha_armazenada == senha_criptografada:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
                 jwt = jwt_token.create_access_token({"sub":user}, access_token_expires) 
-                #print(jwt)
                 return [True,jwt,usuario]
         else:
             return False
@@ -36,3 +35,4 @@ class LoginController:
         jwt_token = Token() 
         payload = jwt_token.verificar_token(token) 
         return payload.get('sub')
+    # este método não está em uso ainda

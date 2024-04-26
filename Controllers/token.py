@@ -31,16 +31,7 @@ class Token:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expirado")
         except JWTError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
-
-    def gerar_token(self, id: str) -> str:
-        payload = {
-            'sub': id,
-            'exp': datetime.now() + timedelta(days=1) 
-        }
-        jwt_token = jwt.encode(payload, self.SECRET_KEY, algorithm=self.ALGORITHM)
-        return jwt_token
-    
-    # verifica se o token já expirou, e se já, cria um novo token
+    # este método não está funcionando ainda
 
 
     
