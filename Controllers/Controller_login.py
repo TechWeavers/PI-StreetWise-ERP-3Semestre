@@ -26,7 +26,7 @@ class LoginController:
             
             if senha_armazenada == senha_criptografada:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-                jwt = jwt_token.create_access_token({"sub":user}, access_token_expires) 
+                jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
                 return [True,jwt,usuario]
         else:
             return False
