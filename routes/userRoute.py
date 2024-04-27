@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models.userModel import User
 #importando controllers
-from Controllers.Controller_user import insertUser,getAllUsers,getUser,deleteUser,updateUser
+from Controllers.Controller_user import ControllerUser
 
 app = FastAPI()
 userAPI = APIRouter()
@@ -17,29 +17,29 @@ app.add_middleware(
 
 @userAPI.post("/novo-usuario", tags=["usuarios"])
 async def createUser(user:User):
-     return insertUser(user)
+     return ControllerUser.insertUser(user)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
 async def listarUsuarios():
-     return getAllUsers()
+     return ControllerUser.getAllUsers()
 
 @userAPI.get("/buscar-usuario/{email}", tags=["usuarios"]) 
 async def buscarUsuario(email:str):
-     return getUser(email)
+     return ControllerUser.getUser(email)
 # buscando um usuario por email, pois é atributo unico
 
 @userAPI.get("/editar-usuario/{email}", tags=["usuarios"])
 async def editarUsuario(email:str):
-     user = getUser(email) # busca o usuário para atualizar
+     user = ControllerUser.getUser(email) # busca o usuário para atualizar
      return user # para carregar os dados do usuário encontrado na página (spa) de atualizar dados
 
-@userAPI.patch("/atualizar-usuario/{email}", tags=["usuarios"]) 
-async def atualizarUsuario(user:User,email:str):
-     return updateUser(dict(user),email)
-# atualiza o usuario passando o parametro de busca pela URL, e chama a função de update, enviando os dados de atualização no corpo da requisição
+@userAPI.patch("/atualizar-usuario", tags=["usuarios"]) 
+async def atualizarUsuario(user:User):
+     return ControllerUser.updateUser(dict(user))
+# atualiza o usuario passando um objeto usuario no corpo da requisição, e chama a função de update, enviando os dados de atualização no corpo da requisição
 
 @userAPI.delete("/deletar-usuario/{email}", tags=["usuarios"])
 async def excluirUsuarios(email:str):
-     return deleteUser(email)
+     return ControllerUser.deleteUser(email)
 
 app.include_router(userAPI)
