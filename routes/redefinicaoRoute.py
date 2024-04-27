@@ -2,7 +2,7 @@ from http.client import HTTPException
 from fastapi import FastAPI
 from starlette.responses import JSONResponse
 from services.email import EmailSchema, emailEsqueceuSenha
-from Controllers.Controller_user import getUser
+from Controllers.Controller_user import ControllerUser
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -20,7 +20,7 @@ app.add_middleware(
 async def esqueceuSenha(email: EmailSchema) -> JSONResponse:
     try:
         for emailusuario in email.email:
-            users = getUser(emailusuario)
+            users = ControllerUser.getUser(emailusuario)
             if not users:
                 raise HTTPException(404, f"Usuário não encontrado para o e-mail: {emailusuario}")
 
@@ -34,5 +34,7 @@ async def esqueceuSenha(email: EmailSchema) -> JSONResponse:
     return {"message": "E-mail enviado com sucesso"}
 
 #@app.post("/RedefinirSenha")
+
+
 
     
