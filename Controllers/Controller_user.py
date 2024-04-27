@@ -69,7 +69,8 @@ def updateUser(user_data, email):
             "$set": {
                 "username": user_data["username"],
                 "email": user_data["email"],
-                "senha": user_data["senha"]
+                "tipo": user_data["tipo"],
+                "password": user_data["password"]
             }
         }
         result = collection.update_one(query, new_values)
