@@ -31,6 +31,7 @@ async def login_for_access_token(user_data: UserLogin) :
     controller = LoginController()
     return controller.login(user_data.username, user_data.password)
 
+# rota teste para autenticação
 @app.get("/produto")
 async def obterProduto(Authorization: Annotated[Header, Depends(validar_token)]):
     print(Authorization)

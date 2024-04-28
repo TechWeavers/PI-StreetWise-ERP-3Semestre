@@ -47,34 +47,3 @@ class Authenticator:
                 
         if senha_armazenada == senha_criptografada:
             return user
-
-
-# recebe um token jwt
-# decodifica o token, verifica e retorna o usuário atual
-# se o token for inválido, retorna um erro http
-""""
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        
-        if username is None:
-            print(username)
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError as erro:
-        raise {"error": credentials_exception, "message":erro}
-    user = get_user( username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user 
-
-# autentica o usuário no banco de dados
-#seta o tempo de expiração do token, e chama a função de criar token
-#retorna o token
-"""
