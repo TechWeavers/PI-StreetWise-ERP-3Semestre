@@ -25,7 +25,7 @@ class Token:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             return payload
         except JWTError :
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expirado")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
     # este método não está funcionando ainda
 
 

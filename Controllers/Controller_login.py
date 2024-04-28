@@ -9,7 +9,7 @@ class LoginController:
     def __init__(self):
         pass
     
-    def login(self, user: str, password: str) -> bool:
+    def login(self, user: str, password: str) -> str:
         print(user)
         print(password)
         jwt_token = Token()  
@@ -27,7 +27,7 @@ class LoginController:
             if senha_armazenada == senha_criptografada:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
                 jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
-                return [True,jwt,usuario]
+                return jwt
         else:
             return False
 
