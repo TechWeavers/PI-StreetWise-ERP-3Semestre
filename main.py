@@ -10,7 +10,7 @@ services = [
 processes = []
 
 for service in services:
-    cmd = f"uvicorn {service['file']}:app --port {service['port']} --host 127.0.0.1 --reload"
+    cmd = f"uvicorn {service['file']}:app --port {service['port']} --reload --host 127.0.0.1"
     process = subprocess.Popen(cmd, shell=True)
     processes.append(process)
 
