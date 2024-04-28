@@ -20,12 +20,12 @@ app.add_middleware(
 
 @app.get("/validar-token")
 async def validar_token(Authorization: Header= Depends(oauth2_scheme) ):
-    jwt_token  = Token()
-    token = jwt_token.verificar_token(Authorization)
-    if not token:
-        raise HTTPException(status_code=401, detail="Usuário não autenticado")
-    return token
-
+    return LoginController.retornar_token(Authorization)
+    
+@app.get("/validar-token-admin")
+async def validar_token_admin(Authorization: Header= Depends(oauth2_scheme) ):
+   return LoginController.retornar_token_admin(Authorization)
+   
 @app.post("/login")
 async def login_for_access_token(user_data: UserLogin) :
     controller = LoginController()
