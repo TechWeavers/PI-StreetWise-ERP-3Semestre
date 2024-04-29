@@ -40,9 +40,13 @@ fm = FastMail(conf)
 
 html= ""
 
-async def emailEsqueceuSenha(user: User): 
+async def emailEsqueceuSenha(user: User, token: str): 
     try:
         emailusuario = user["email"]
+        username = user["username"]
+        redefinirURL = f"http://127.0.0.1:3000/redefinir-senha/{token}"  # URL de redefinição de senha com token
+        
+
         html = """
             <h1>Olá, {username}</h1>
             <p>Recebemos recentemente um pedido de recuperação de senha da sua conta cadastrada na InkHouse</p>
@@ -51,12 +55,12 @@ async def emailEsqueceuSenha(user: User):
             <p>Basta ignorar esse e-mail</p> 
             <br>
             <p>Clique no link abaixo para redefinir sua senha:</p>
-            <p><a href="https://example.com/redefinir-senha">Link para redefinição de senha</a></p>
+            <p><a href="{redefinirURL}">Link para redefinição de senha</a></p>
             <br>
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
             <p>Equipe da InkHouse</p>
-        """.format(username=user["username"])
+        """.format(username=username, redefinirURL= redefinirURL)
 
         message = MessageSchema(
             subject="Recuperação de Senha - InkHouse",
@@ -98,4 +102,3 @@ async def senhaRedefinida(user: User):
     except Exception as e:
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
-

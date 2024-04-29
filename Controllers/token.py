@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from datetime import datetime, timedelta,timezone   
+import logging
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 600 # tempo de expiração do token
@@ -24,9 +25,13 @@ class Token:
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             return payload
-        except JWTError :
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
-        
+        except jwt.ExpiredSignatureError:
+            logging.error("Token expirado: %s", token)
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expirado")
+        except jwt.JWTError as e:
+            logging.error("Erro ao decodificar token: %s", str(e))
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")   
+    
     def retornar_token_admin(self,token:str):
         try:
             credentials_exception = HTTPException(
@@ -43,7 +48,7 @@ class Token:
                 return token     
         except Exception:
             raise credentials_exception
-       
+    
     # este método não está funcionando ainda
 
 
