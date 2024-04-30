@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+body{
+    margin: 0;
+    padding: 0; 
+}
+
+#header{
+    background-color: #333232;
+    width: 100%;
+    height: 96px;
+    display: flex;
+    justify-content: space-between;
+    
+}    
+
+#txtCabe{
+    color: aliceblue;
+    font-family:'Inter', sans-serif;
+    font-size: 4rem;
+    padding-top: 0px;
+    display: flex;
+    align-items: center;
+    text-shadow: 0em 4.5px 4px rgb(0, 0, 0);
+}
+
+#auten{
+    background-color: aliceblue;
+    width: 50px;
+    height: 50px;
+    display: flex;
+}
+
+#menu{
+    background-color: aliceblue;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    
+}
