@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+body{
+    margin: 0;
+    padding: 0; 
+}
+
+#header{
+    background-color: #333232;
+    width: 100%;
+    height: 96px;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 50px;
+}    
+
+#txtCabe{
+    color: aliceblue;
+    font-family:'Inter', sans-serif;
+    font-size: 4rem;
+    padding-top: 0px;
+    display: flex;
+    align-items: center;
+    text-shadow: 0em 4.5px 4px rgb(0, 0, 0);
+}
+
+
+
+#menu{
+    background-color: aliceblue;
+    width: 50px;
+    height: 50px;
+    display: flex;
+}
+
+#auten{
+    background-color: aliceblue;
+    width: 50px;
+    height: 39px;
+    display: flex;
+}
+
+#iconAuten{
+    margin: 0;
+    padding: 0;
+}
+
+#identi{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+#txt1ident{
+    font-family: 'Inter', sans-serif;
+    font-weight: bolder;
+    color: #fefefe;
+    padding: 0;
+    margin: 0;
+}
+#txt1ident{
+    font-family: 'Inter', sans-serif;
+    font-weight: normal;
+    color: #f59200;
+}
