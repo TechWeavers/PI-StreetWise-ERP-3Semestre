@@ -57,7 +57,7 @@ async def esqueceu_senha(email: emailClass) -> str:
 async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, Depends(validar_token)]) -> JSONResponse:
     print(Authorization)
     if senhas.senha != senhas.senhaConfirmacao:
-        return JSONResponse(content={"message": "As senhas precisam ser iguais para a alteração."}, status_code=400)
+        return JSONResponse(content={"message": "As senhas precisam ser iguais para a alteração"}, status_code=400)
 
     try:
 
