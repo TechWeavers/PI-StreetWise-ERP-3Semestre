@@ -10,7 +10,7 @@ body{
     height: 96px;
     display: flex;
     justify-content: space-between;
-    
+    padding-right: 50px;
 }    
 
 #txtCabe{
@@ -23,17 +23,41 @@ body{
     text-shadow: 0em 4.5px 4px rgb(0, 0, 0);
 }
 
-#auten{
-    background-color: aliceblue;
-    width: 50px;
-    height: 50px;
-    display: flex;
-}
+
 
 #menu{
     background-color: aliceblue;
     width: 50px;
     height: 50px;
     display: flex;
-    
+}
+
+#auten{
+    background-color: aliceblue;
+    width: 50px;
+    height: 39px;
+    display: flex;
+}
+
+#iconAuten{
+    margin: 0;
+    padding: 0;
+}
+
+#identi{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+#txt1ident{
+    font-family: 'Inter', sans-serif;
+    font-weight: bolder;
+    color: #fefefe;
+    padding: 0;
+    margin: 0;
+}
+#txt1ident{
+    font-family: 'Inter', sans-serif;
+    font-weight: normal;
+    color: #f59200;
 }
