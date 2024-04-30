@@ -18,8 +18,6 @@ class Authenticator:
        pass
 
     def authenticate_user(self,username:str, password:str): # autenticar e retornar um usuário
-        
-        #exception_login = Exceptions.lancar_excecao_login()
         try:
             user = self.get_user(username, password)
             if not user:
@@ -37,7 +35,7 @@ class Authenticator:
     # esta função pesquisa um usuário no banco por username e password (encriptado)
     def get_user (self,username: str, password:str):
         senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
-        user = collection.find_one({"username":username, "password":senha_criptografada})
+        user = collection.find_one({"email":username, "password":senha_criptografada})
         print(username)
         print(password)
         if user:

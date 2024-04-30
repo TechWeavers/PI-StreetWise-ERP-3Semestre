@@ -18,7 +18,7 @@ class LoginController:
 
         #if not usuario:
             #self.lancar_excecao_login()
-        username = usuario["username"]
+        username = usuario["email"]
         print(username)
         if usuario:
             senha_armazenada = usuario["password"]

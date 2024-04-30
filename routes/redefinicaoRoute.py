@@ -11,8 +11,6 @@ from datetime import datetime, timedelta
 from typing import Annotated
 from models.emailModel import emailClass
  
- 
- 
 app = FastAPI()
 tokens = Token()
  
