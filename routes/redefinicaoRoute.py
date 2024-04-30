@@ -54,7 +54,7 @@ async def esqueceu_senha(email: emailClass) -> JSONResponse: #-> JSONResponse
         token = tokens.create_access_token({"sub": emailUsuario},access_token_expires)
         print(token)
         await emailEsqueceuSenha(user,token) #, token
-        #return token
+        return token
            
     except HTTPException as http_exception:
         raise http_exception
