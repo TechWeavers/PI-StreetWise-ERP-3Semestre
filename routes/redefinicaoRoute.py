@@ -46,7 +46,7 @@ async def esqueceu_senha(email: emailClass) -> JSONResponse: #-> JSONResponse
         if not user:
             raise HTTPException(404, f"Usuário não encontrado para o e-mail")
         
-        #for user in users:
+        
         ACCESS_TOKEN_EXPIRE_MINUTES=10
         access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
         #jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
