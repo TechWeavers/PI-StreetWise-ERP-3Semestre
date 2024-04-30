@@ -12,7 +12,7 @@ from typing import Annotated
 from models.emailModel import emailClass
  
 app = FastAPI()
-tokens = Token()
+tokenClass = Token()
  
 app.add_middleware(
     CORSMiddleware,
@@ -22,7 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
  
-import logging
  
  
  
@@ -45,8 +44,7 @@ async def esqueceu_senha(email: emailClass) -> str:
             raise HTTPException(404, f"Usuário não encontrado para o e-mail")
         ACCESS_TOKEN_EXPIRE_MINUTES=10
         access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-        token = tokens.create_access_token({"sub": emailUsuario},access_token_expires)
-        print(token)
+        token = tokenClass.create_access_token({"sub": emailUsuario},access_token_expires)
         await emailEsqueceuSenha(user,token) #, token
         return token
            
@@ -55,7 +53,7 @@ async def esqueceu_senha(email: emailClass) -> str:
     except Exception as e:
         raise HTTPException(500, f"Erro ao enviar o e-mail: {str(e)}")
  
-@app.post("/RedefinirSenha")
+@app.put("/RedefinirSenha")
 async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, Depends(validar_token)]) -> JSONResponse:
    
     try:
@@ -67,14 +65,17 @@ async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, De
         #if datetime.now(timezone.utc) > token_data["expiration_time"]:
             #del tokens[token]  
             #raise HTTPException(status_code=400, detail="Token expirado")
-       
+        print(senhas.senha)
         if senhas.senha != senhas.senhaConfirmacao:
             raise HTTPException(status_code=400, detail="As senhas fornecidas são diferentes")
-       
-        user_data = {"email": token_data["email"], "password": senhas.senha}
+
+        print("abu")
+        user_data = {"email": Authorization["sub"], "password": senhas.senha}
+        print("abu")
         ControllerUser.updateUser(user_data)
+        print("abu")
  
-        del tokens[token]
+        del tokenClass[Authorization]
  
         return {"message": "Senha redefinida com sucesso"}
  
