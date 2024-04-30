@@ -63,7 +63,7 @@ class ControllerUser:
   @staticmethod
   def getSingleUser(email):
       try:
-          user = collection.find({"email": email})
+          user = collection.find_one({"email": email})
           return user
       except Exception as e:
           return {"error": f"Error while retrieving user: {e}"}
