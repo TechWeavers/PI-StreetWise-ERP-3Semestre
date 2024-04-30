@@ -6,6 +6,7 @@ from pydantic import BaseModel, EmailStr
 from starlette.responses import JSONResponse
 from Controllers.Controller_user import User
 
+
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -44,8 +45,7 @@ async def emailEsqueceuSenha(user: User): #, token: str
     try:
         emailusuario = user["email"]
         username = user["username"]
-        redefinirURL = f"http://127.0.0.1:3000/redefinir-senha/"  # URL de redefinição de senha com token {token}
-        
+        redefinirURL = f"http://127.0.0.1:3000/redefinir-senha/" 
 
         html = """
             <h1>Olá, {username}</h1>

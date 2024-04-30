@@ -3,6 +3,7 @@ from models.userModel import User
 import hashlib
 
 
+
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
 database_name = "streetwise_db"
@@ -56,6 +57,14 @@ class ControllerUser:
               user["_id"] = str(user["_id"])
               found_users.append(user)
           return found_users
+      except Exception as e:
+          return {"error": f"Error while retrieving user: {e}"}
+
+  @staticmethod
+  def getSingleUser(email):
+      try:
+          user = collection.find({"email": email})
+          return user
       except Exception as e:
           return {"error": f"Error while retrieving user: {e}"}
 

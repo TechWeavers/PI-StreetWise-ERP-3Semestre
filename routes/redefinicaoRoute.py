@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from Controllers.token import Token
 from datetime import datetime, timedelta
 from typing import Annotated
+from models.emailModel import emailClass
 
 
 
@@ -32,22 +33,28 @@ class SenhaClass(BaseModel):
     senhaConfirmacao: str
 
 
-@app.post("/EsqueceuSenha")
-async def esqueceu_senha(email: EmailSchema) : #-> JSONResponse
-    try:
-        for emailusuario in email.email:
-            users = ControllerUser.getUser(emailusuario)
-            if not users:
-                raise HTTPException(404, f"Usuário não encontrado para o e-mail: {emailusuario}")
 
-            for user in users:
-                ACCESS_TOKEN_EXPIRE_MINUTES=10
-                access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-                #jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
-                #return jwt
-                token = tokens.create_access_token({"sub": emailusuario},access_token_expires)
-                await emailEsqueceuSenha(user) #, token
-        return token
+@app.post("/EsqueceuSenha")
+async def esqueceu_senha(email: emailClass) -> JSONResponse: #-> JSONResponse
+    try:
+        #for emailusuario in email.email:
+        print(email)
+        emailUsuario = email.email
+        user = ControllerUser.getSingleUser(emailUsuario)
+        
+        print(user)
+        if not user:
+            raise HTTPException(404, f"Usuário não encontrado para o e-mail")
+        
+        #for user in users:
+        ACCESS_TOKEN_EXPIRE_MINUTES=10
+        access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
+        #jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
+        #return jwt
+        token = tokens.create_access_token({"sub": emailUsuario},access_token_expires)
+        print(token)
+        await emailEsqueceuSenha(user) #, token
+        #return token
            
     except HTTPException as http_exception:
         raise http_exception
