@@ -40,11 +40,11 @@ fm = FastMail(conf)
 
 html= ""
 
-async def emailEsqueceuSenha(user: User, token: str): 
+async def emailEsqueceuSenha(user: User): #, token: str
     try:
         emailusuario = user["email"]
         username = user["username"]
-        redefinirURL = f"http://127.0.0.1:3000/redefinir-senha/{token}"  # URL de redefinição de senha com token
+        redefinirURL = f"http://127.0.0.1:3000/redefinir-senha/"  # URL de redefinição de senha com token {token}
         
 
         html = """

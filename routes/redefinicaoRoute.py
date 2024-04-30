@@ -6,7 +6,7 @@ from routes.loginRoute import validar_token
 from services.email import EmailSchema, emailEsqueceuSenha
 from Controllers.Controller_user import ControllerUser
 from fastapi.middleware.cors import CORSMiddleware
-from Controllers.token import *
+from Controllers.token import Token
 from datetime import datetime, timedelta
 from typing import Annotated
 
@@ -33,7 +33,7 @@ class SenhaClass(BaseModel):
 
 
 @app.post("/EsqueceuSenha")
-async def esqueceu_senha(email: EmailSchema) -> JSONResponse:
+async def esqueceu_senha(email: EmailSchema) : #-> JSONResponse
     try:
         for emailusuario in email.email:
             users = ControllerUser.getUser(emailusuario)
@@ -41,9 +41,13 @@ async def esqueceu_senha(email: EmailSchema) -> JSONResponse:
                 raise HTTPException(404, f"Usuário não encontrado para o e-mail: {emailusuario}")
 
             for user in users:
-                token = tokens.create_access_token(data={"email": emailusuario}, expires_delta=timedelta(minutes=30))
-                await emailEsqueceuSenha(user, token)
-        return {"message": "Token de redefinição de senha enviado com sucesso"}
+                ACCESS_TOKEN_EXPIRE_MINUTES=10
+                access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
+                #jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
+                #return jwt
+                token = tokens.create_access_token({"sub": emailusuario},access_token_expires)
+                await emailEsqueceuSenha(user) #, token
+        return token
            
     except HTTPException as http_exception:
         raise http_exception
@@ -52,17 +56,16 @@ async def esqueceu_senha(email: EmailSchema) -> JSONResponse:
 
 @app.post("/RedefinirSenha")
 async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, Depends(validar_token)]) -> JSONResponse:
-   
-
+    
     try:
-        token_data = tokens.verificar_token(Authorization)
-        print("tokeou")
-        if not token_data:
-            raise HTTPException(status_code=404, detail="Token inválido ou expirado")
+        #token_data = tokens.verificar_token(Authorization)
+        #print("tokeou")
+        #if not token_data:
+            #raise HTTPException(status_code=404, detail="Token inválido ou expirado")
         
-        if datetime.now(timezone.utc) > token_data["expiration_time"]:
-            del tokens[token]  
-            raise HTTPException(status_code=400, detail="Token expirado")
+        #if datetime.now(timezone.utc) > token_data["expiration_time"]:
+            #del tokens[token]  
+            #raise HTTPException(status_code=400, detail="Token expirado")
         
         if senhas.senha != senhas.senhaConfirmacao:
             raise HTTPException(status_code=400, detail="As senhas fornecidas são diferentes")
