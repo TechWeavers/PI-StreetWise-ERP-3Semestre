@@ -35,7 +35,7 @@ class SenhaClass(BaseModel):
  
  
 @app.post("/EsqueceuSenha")
-async def esqueceu_senha(email: emailClass) -> JSONResponse: #-> JSONResponse
+async def esqueceu_senha(email: emailClass) -> str: 
     try:
         #for emailusuario in email.email:
         print(email)
@@ -45,12 +45,8 @@ async def esqueceu_senha(email: emailClass) -> JSONResponse: #-> JSONResponse
         print(user)
         if not user:
             raise HTTPException(404, f"Usuário não encontrado para o e-mail")
-       
-        #for user in users:
         ACCESS_TOKEN_EXPIRE_MINUTES=10
         access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-        #jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires)
-        #return jwt
         token = tokens.create_access_token({"sub": emailUsuario},access_token_expires)
         print(token)
         await emailEsqueceuSenha(user,token) #, token
