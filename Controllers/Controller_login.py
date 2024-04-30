@@ -11,12 +11,13 @@ class LoginController:
         pass
     
     def login(self, user: str, password: str) -> str:
-        print(user)
-        print(password)
         jwt_token = Token()  
         auth = Authenticator()
       
         usuario = auth.authenticate_user(user,password)
+
+        #if not usuario:
+            #self.lancar_excecao_login()
         username = usuario["username"]
         print(username)
         if usuario:
@@ -56,4 +57,6 @@ class LoginController:
         if not token:
             raise HTTPException(status_code=401, detail="Usuário não autenticado")
         return token
+    
+    
 

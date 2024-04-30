@@ -48,8 +48,6 @@ class Token:
                 return token     
         except Exception:
             raise credentials_exception
-    
-    # este método não está funcionando ainda
 
 
 
