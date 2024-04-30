@@ -60,9 +60,15 @@ async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, De
         return {"message": "As senhas fornecidas são diferentes"}
 
     try:
+        print(senhas.senha)
+        if senhas.senha != senhas.senhaConfirmacao:
+            raise HTTPException(status_code=400, detail="As senhas fornecidas são diferentes")
 
         user_data = {"email": Authorization["sub"], "password": senhas.senha}
+        print("abu")
+        print("user_data:", user_data)
         ControllerUser.updateUser(user_data)
+        print("abu")
  
         return {"message": "Senha redefinida com sucesso"}
  

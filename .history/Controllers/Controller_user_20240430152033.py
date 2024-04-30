@@ -86,7 +86,7 @@ class ControllerUser:
           camposAtualizados = {}
           for campo in campos:
             if campo in user_data and user_data[campo] is not None:
-                camposAtualizados[campo] = user_data[campo]
+                camposAtualizados[field] = user_data[campo]
 
           new_values = {"$set": camposAtualizados}
 

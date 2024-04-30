@@ -25,6 +25,7 @@ class Token:
     def verificar_token(self, token: str) -> dict:
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+            print(payload)
             return payload
             
         except jwt.ExpiredSignatureError:

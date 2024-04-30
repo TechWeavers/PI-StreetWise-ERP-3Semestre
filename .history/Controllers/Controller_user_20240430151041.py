@@ -76,29 +76,26 @@ class ControllerUser:
     except TypeError as erro:
       return erro
     
-  @staticmethod
-  def updateUser(user_data):
-      try:
-          query = {"email": user_data["email"]}
-
-          campos = ["username", "email", "tipo", "password"]
-
-          camposAtualizados = {}
-          for campo in campos:
-            if campo in user_data and user_data[campo] is not None:
-                camposAtualizados[campo] = user_data[campo]
-
-          new_values = {"$set": camposAtualizados}
-
-          result = collection.update_one(query, new_values)
-
-          if result.modified_count > 0:
-              return {"message": "Usuário atualizado com sucesso"}
-          else:
-              return {"message": "Nenhum usuário atualizado. Verifique o email fornecido."}
-      except Exception as e:
-          print(f"Erro ao atualizar usuário: {e}")
-          return {"erro": f"Erro ao atualizar usuário: {e}"}
+@staticmethod
+def updateUser(user_data):
+    try:
+        query = {"email": user_data["email"]}
+        new_values = {
+            "$set": {
+                "username": user_data.get("username"),  # Verifique se os campos existem em user_data
+                "tipo": user_data.get("tipo"),
+                "password": user_data.get("password")
+            }
+        }
+        result = collection.update_one(query, new_values)
+        if result.modified_count > 0:
+            return {"message": "Usuário atualizado com sucesso"}
+        else:
+            return {"message": "Nenhum usuário atualizado. Verifique o email fornecido."}
+    except Exception as e:
+        # Imprima a exceção para depuração
+        print(f"Erro ao atualizar usuário: {e}")
+        return {"erro": f"Erro ao atualizar usuário: {e}"}
 
   @staticmethod
   def deleteUser(email):

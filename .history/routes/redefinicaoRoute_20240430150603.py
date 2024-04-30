@@ -57,12 +57,28 @@ async def esqueceu_senha(email: emailClass) -> str:
 async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, Depends(validar_token)]) -> JSONResponse:
     print(Authorization)
     if senhas.senha != senhas.senhaConfirmacao:
-        return {"message": "As senhas fornecidas são diferentes"}
+            raise HTTPException(status_code=400, detail="As senhas fornecidas são diferentes")
+            return {"message": "As senhas fornecidas são diferentes"}
 
     try:
+        print("Authorization:", Authorization)
+        #token_data = tokens.verificar_token(Authorization)
+        #print("tokeou")
+        #if not token_data:
+            #raise HTTPException(status_code=404, detail="Token inválido ou expirado")
+       
+        #if datetime.now(timezone.utc) > token_data["expiration_time"]:
+            #del tokens[token]  
+            #raise HTTPException(status_code=400, detail="Token expirado")
+        print(senhas.senha)
+        if senhas.senha != senhas.senhaConfirmacao:
+            raise HTTPException(status_code=400, detail="As senhas fornecidas são diferentes")
 
         user_data = {"email": Authorization["sub"], "password": senhas.senha}
+        print("abu")
+        print("user_data:", user_data)
         ControllerUser.updateUser(user_data)
+        print("abu")
  
         return {"message": "Senha redefinida com sucesso"}
  

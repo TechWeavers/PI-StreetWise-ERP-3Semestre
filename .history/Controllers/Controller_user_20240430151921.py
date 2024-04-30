@@ -81,14 +81,14 @@ class ControllerUser:
       try:
           query = {"email": user_data["email"]}
 
-          campos = ["username", "email", "tipo", "password"]
+          cam = ["username", "email", "tipo", "password"]
 
-          camposAtualizados = {}
-          for campo in campos:
-            if campo in user_data and user_data[campo] is not None:
-                camposAtualizados[campo] = user_data[campo]
+          update_fields = {}
+          for field in fields_to_update:
+            if field in user_data and user_data[field] is not None:
+                update_fields[field] = user_data[field]
 
-          new_values = {"$set": camposAtualizados}
+          new_values = {"$set": update_fields}
 
           result = collection.update_one(query, new_values)
 

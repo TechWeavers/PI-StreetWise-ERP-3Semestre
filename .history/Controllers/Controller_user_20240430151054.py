@@ -80,18 +80,14 @@ class ControllerUser:
   def updateUser(user_data):
       try:
           query = {"email": user_data["email"]}
-
-          campos = ["username", "email", "tipo", "password"]
-
-          camposAtualizados = {}
-          for campo in campos:
-            if campo in user_data and user_data[campo] is not None:
-                camposAtualizados[campo] = user_data[campo]
-
-          new_values = {"$set": camposAtualizados}
-
+          new_values = {
+              "$set": {
+                  "username": user_data.get("username"), 
+                  "tipo": user_data.get("tipo"),
+                  "password": user_data.get("password")
+              }
+          }
           result = collection.update_one(query, new_values)
-
           if result.modified_count > 0:
               return {"message": "Usuário atualizado com sucesso"}
           else:
