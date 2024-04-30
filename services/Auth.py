@@ -1,5 +1,3 @@
-from fastapi import Depends, HTTPException, status
-from models.userModel import User
 import hashlib
 from configs.db import create_mongodb_connection
 from services.Exceptions import Exceptions
@@ -17,9 +15,9 @@ class Authenticator:
     def __init__(self):
        pass
 
-    def authenticate_user(self,username:str, password:str): # autenticar e retornar um usuário
+    def authenticate_user(self,email:str, password:str): # autenticar e retornar um usuário
         try:
-            user = self.get_user(username, password)
+            user = self.get_user(email, password)
             if not user:
                 raise Exceptions.lancar_excecao_login()
             print("Achou o usuário")
@@ -32,11 +30,11 @@ class Authenticator:
             raise Exceptions.lancar_excecao_login()
         
 
-    # esta função pesquisa um usuário no banco por username e password (encriptado)
-    def get_user (self,username: str, password:str):
+    # esta função pesquisa um usuário no banco por email e password (encriptado)
+    def get_user (self,email: str, password:str):
         senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
-        user = collection.find_one({"email":username, "password":senha_criptografada})
-        print(username)
+        user = collection.find_one({"email":email, "password":senha_criptografada})
+        print(email)
         print(password)
         if user:
             user['_id'] = str(user['_id'])  # Convertendo o ObjectId para string
@@ -46,7 +44,7 @@ class Authenticator:
             return False
         
     @staticmethod
-    def verificar_senha_encriptada(senha_armazenada:str,password:str):
+    def verificar_senha_encriptada(senha_armazenada:str,password:str) -> bool:
         print(senha_armazenada)
         senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
         print(senha_criptografada)

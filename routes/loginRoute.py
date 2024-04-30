@@ -29,7 +29,7 @@ async def validar_token_admin(Authorization: Header= Depends(oauth2_scheme) ):
 @app.post("/login")
 async def login_for_access_token(user_data: UserLogin) :
     controller = LoginController()
-    return controller.login(user_data.username, user_data.password)
+    return controller.login(user_data.email, user_data.password)
 
 # rota teste para autenticação
 @app.get("/produto")
