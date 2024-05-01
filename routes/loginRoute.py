@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, status,Header
+from fastapi import APIRouter, Depends, FastAPI,Header,Query
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
@@ -26,6 +26,10 @@ async def validar_token(Authorization: Header= Depends(oauth2_scheme) ):
 @app.get("/validar-token-admin")
 async def validar_token_admin(Authorization: Header= Depends(oauth2_scheme) ):
    return LoginController.retornar_token_admin(Authorization)
+
+@app.get("/tipo-usuario/{token}")
+async def retornar_tipo_usuario(token:str):#Authorization: Annotated[str, Header()]
+    return LoginController.tipo_token(token)
    
 @app.post("/login")
 async def login_for_access_token(user_data: UserLogin) :

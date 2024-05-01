@@ -46,6 +46,22 @@ class LoginController:
         if not token:
             raise Exceptions.token_invalido()
         return token
+  
+      
+    def tipo_token(token:str):
+        print(token)
+        try:
+            jwt_token = Token()
+            token = jwt_token.verificar_token(token)
+            print(token)
+            tipo =  token["sub"]
+            if tipo=="Administrador" or tipo =="Tatuador":
+                print(tipo)
+                return tipo    
+            else:
+                raise Exceptions.token_invalido()     
+        except Exception:
+            raise Exceptions.acesso_restrito_adm()
     
     
 
