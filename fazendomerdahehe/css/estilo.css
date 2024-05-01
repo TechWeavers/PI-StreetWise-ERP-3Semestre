@@ -9,8 +9,7 @@ body{
     width: 100%;
     height: 96px;
     display: flex;
-    justify-content: space-between;
-    padding-right: 50px;
+    justify-content: flex-end;
 }    
 
 #txtCabe{
@@ -21,43 +20,53 @@ body{
     display: flex;
     align-items: center;
     text-shadow: 0em 4.5px 4px rgb(0, 0, 0);
+    margin-right: 240px;
 }
 
 
 
 #menu{
     background-color: aliceblue;
-    width: 50px;
-    height: 50px;
+    width: 85px;
+    height: 100%;
     display: flex;
+    align-self: center;
 }
 
 #auten{
-    background-color: aliceblue;
-    width: 50px;
-    height: 39px;
+    width: 180px;
+    height: 57px;
     display: flex;
+    margin-right: 35px;
+    align-self: center;
 }
 
+
 #iconAuten{
-    margin: 0;
+    margin-right: 10px;
     padding: 0;
 }
 
 #identi{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
 }
-#txt1ident{
+#txt1Ident{
     font-family: 'Inter', sans-serif;
     font-weight: bolder;
     color: #fefefe;
     padding: 0;
-    margin: 0;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    display: flex;
+    text-transform: uppercase;
 }
-#txt1ident{
+#txt2Ident{
     font-family: 'Inter', sans-serif;
     font-weight: normal;
     color: #f59200;
+    padding: 0;
+    margin-top: 0px;
+    text-transform: uppercase;
 }
