@@ -1,7 +1,5 @@
-from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from datetime import datetime, timedelta,timezone   
-import logging
 from services.Exceptions import Exceptions
 
 
@@ -27,12 +25,8 @@ class Token:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             return payload
             
-        except jwt.ExpiredSignatureError:
-            logging.error("Token expirado: %s", token)
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expirado")
-        except jwt.JWTError as e:
-            logging.error("Erro ao decodificar token: %s", str(e))
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")   
+        except Exception:
+            raise Exceptions.token_invalido()
     
     def retornar_token_admin(self,token:str):
         try:

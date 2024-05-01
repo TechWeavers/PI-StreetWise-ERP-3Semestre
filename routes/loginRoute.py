@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from models.userLogin import UserLogin
 from Controllers.Controller_login import LoginController
 from Controllers.token import Token
+from starlette.responses import JSONResponse
 
 app = FastAPI()
 userAPI = APIRouter()
@@ -28,8 +29,14 @@ async def validar_token_admin(Authorization: Header= Depends(oauth2_scheme) ):
    
 @app.post("/login")
 async def login_for_access_token(user_data: UserLogin) :
-    controller = LoginController()
-    return controller.login(user_data.email, user_data.password)
+    try:
+        controller = LoginController()
+        content = controller.login(user_data.email, user_data.password)
+        return content
+    except:
+        print("As senhas estão erradas")
+        return JSONResponse(content={"message": "Por favor tente novamente"}, status_code=400)
+
 
 # rota teste para autenticação
 @app.get("/produto")

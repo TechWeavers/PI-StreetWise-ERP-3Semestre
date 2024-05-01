@@ -44,7 +44,7 @@ html= ""
 async def emailEsqueceuSenha(user: User,token:str): #, token: str
     try:
         emailusuario = user["email"]
-        username = user["username"]
+        username = user["name"]
         redefinirURL = f"http://127.0.0.1:3000/redefinir-senha?token={token}"
  
         html = """

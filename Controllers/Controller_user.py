@@ -1,8 +1,9 @@
 from configs.db import create_mongodb_connection
 from models.userModel import User
 import hashlib
-
-
+from services.Exceptions import Exceptions
+from fastapi import HTTPException,status
+import logging
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
@@ -11,7 +12,7 @@ collection_name = "users"
 
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
-collection = db[collection_name] # todas as operações de usuarios podem usar essa collection
+collection = db[collection_name] #todas as operações de usuarios podem usar essa collection
 
 class ControllerUser:
     def __init__(self) -> None:
@@ -22,16 +23,23 @@ class ControllerUser:
       try:
         existingUser = collection.find_one({"email":user.email})
         if existingUser !=None:
-          raise ValueError("Já existe um usuário cadastrado com esse email")
-        # Criptografando a senha antes de inserir no banco de dados
+          raise Exceptions.usuario_existente()
+  
         senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
         user.password = senha_criptografada
-        collection.insert_one(dict(user))
-        return {"message": "Usuário cadastrado com sucesso", "data": user}
-      except TypeError as erro:
-        return {"message": "Erro ao cadastrar usuário", "erro": str(erro)}
-      except ValueError as erro:
-        return {"message":"erro ao cadastrar usuário","erro":str(erro)}
+        print(user)
+        result = collection.insert_one(dict(user))
+        if not result:
+          raise HTTPException
+        return {"message": status.HTTP_200_OK}
+      #except Exception:
+        #raise Exceptions.usuario_existente()
+      except HTTPException:
+        print(logging.ERROR)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
+     
+      
+      
     
     @staticmethod
     def getAllUsers():
@@ -44,44 +52,47 @@ class ControllerUser:
             user["_id"] = str(user["_id"])
 
           return {"users": users}
-        except TypeError as erro:
-          return{"Erro ao listar usuários: ":erro}
+        except Exception:
+         raise Exceptions.erro_manipular_usuario()
 
     @staticmethod
     def getUser(email):
         try:
             users = collection.find({"email": email})
+            if not users:
+               raise Exceptions.erro_manipular_usuario()
+            
             found_users = []
             for user in users:
                 # Convert ObjectId to string if needed
                 user["_id"] = str(user["_id"])
                 found_users.append(user)
             return found_users
-        except Exception as e:
-            return {"error": f"Error while retrieving user: {e}"}
+        except Exception:
+         raise Exceptions.erro_manipular_usuario()
 
     @staticmethod
     def getSingleUser(email):
         try:
             user = collection.find_one({"email": email})
             return user
-        except Exception as e:
-            return {"error": f"Error while retrieving user: {e}"}
+        except Exception:
+          raise Exceptions.erro_manipular_usuario()
 
     @staticmethod
     def editUser(email):
       try:
         user  = collection.find({"email":email})
         return user
-      except TypeError as erro:
-        return erro
+      except Exception:
+        raise Exceptions.erro_manipular_usuario()
       
     @staticmethod
     def updateUser(user_data):
         try:
             query = {"email": user_data["email"]}
 
-            campos = ["username", "email", "tipo", "password"]
+            campos = ["name", "email", "tipo", "password"]
 
             camposAtualizados = {}
             for campo in campos:
@@ -95,10 +106,9 @@ class ControllerUser:
             if result.modified_count > 0:
                 return {"message": "Usuário atualizado com sucesso"}
             else:
-                return {"message": "Nenhum usuário atualizado. Verifique o email fornecido."}
-        except Exception as e:
-            print(f"Erro ao atualizar usuário: {e}")
-            return {"erro": f"Erro ao atualizar usuário: {e}"}
+                raise Exceptions.erro_manipular_usuario()
+        except Exception:
+         raise Exceptions.erro_manipular_usuario()
         
 
     @staticmethod
@@ -113,19 +123,23 @@ class ControllerUser:
             if result.modified_count > 0:
                 return {"message": "Usuário atualizado com sucesso"}
             else:
-                return {"message": "Nenhum usuário atualizado. Verifique o email fornecido."}
-        except Exception as e:
-            print(f"Erro ao atualizar usuário: {e}")
-            return {"erro": f"Erro ao atualizar usuário: {e}"}
+                raise Exceptions.erro_manipular_usuario()
+        except Exception:
+          raise Exceptions.erro_manipular_usuario()
 
     @staticmethod
     def deleteUser(email):
       try:
         query  = {"email":email}
-        collection.delete_one(query)
-        return {"message":"usuário deletado com sucesso: "}
-      except TypeError as erro:
-        return{"erro ao deletar usuário: ":erro}
+        if not query:
+           raise Exceptions.erro_manipular_usuario()
+        result = collection.delete_one(query)
+        if result:
+            return {"message": "Usuário deletado com sucesso"}
+        else:
+            raise Exceptions.erro_manipular_usuario()
+      except Exception:
+        raise Exceptions.erro_manipular_usuario()
 
 
     
