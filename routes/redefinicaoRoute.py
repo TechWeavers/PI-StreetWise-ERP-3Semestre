@@ -10,6 +10,7 @@ from Controllers.token import Token
 from datetime import datetime, timedelta
 from typing import Annotated
 from models.emailModel import emailClass
+from models.senhaModel import SenhaClass
  
 app = FastAPI()
 tokenClass = Token()
@@ -21,14 +22,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
- 
- 
- 
- 
-class SenhaClass(BaseModel):
-    senha: str
-    senhaConfirmacao: str
- 
  
  
 @app.post("/EsqueceuSenha")
@@ -45,7 +38,7 @@ async def esqueceu_senha(email: emailClass) -> str:
         ACCESS_TOKEN_EXPIRE_MINUTES=10
         access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
         token = tokenClass.create_access_token({"sub": emailUsuario},access_token_expires)
-        await emailEsqueceuSenha(user,token) #, token
+        await emailEsqueceuSenha(user,token) 
         return token
            
     except HTTPException as http_exception:

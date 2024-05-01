@@ -81,7 +81,7 @@ class ControllerUser:
         try:
             query = {"email": user_data["email"]}
 
-            campos = ["username", "email", "tipo", "password"]
+            campos = ["name", "email", "tipo", "password"]
 
             camposAtualizados = {}
             for campo in campos:
