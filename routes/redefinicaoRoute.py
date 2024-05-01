@@ -62,7 +62,7 @@ async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, De
     try:
 
         user_data = {"email": Authorization["sub"], "password": senhas.senha}
-        ControllerUser.updateUser(user_data)
+        ControllerUser.update_user_senha(user_data)
  
         return {"message": "Senha redefinida com sucesso"}
  

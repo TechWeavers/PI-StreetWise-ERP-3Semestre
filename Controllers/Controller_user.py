@@ -14,100 +14,118 @@ db = create_mongodb_connection(connection_string, database_name)
 collection = db[collection_name] # todas as operações de usuarios podem usar essa collection
 
 class ControllerUser:
-  def __init__(self) -> None:
-    pass
+    def __init__(self) -> None:
+      pass
 
-  @staticmethod
-  def insertUser(user:User)->dict:
-    try:
-      existingUser = collection.find_one({"email":user.email})
-      if existingUser !=None:
-        raise ValueError("Já existe um usuário cadastrado com esse email")
-      # Criptografando a senha antes de inserir no banco de dados
-      senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
-      user.password = senha_criptografada
-      collection.insert_one(dict(user))
-      return {"message": "Usuário cadastrado com sucesso", "data": user}
-    except TypeError as erro:
-      return {"message": "Erro ao cadastrar usuário", "erro": str(erro)}
-    except ValueError as erro:
-      return {"message":"erro ao cadastrar usuário","erro":str(erro)}
-  
-  @staticmethod
-  def getAllUsers():
+    @staticmethod
+    def insertUser(user:User)->dict:
       try:
-    # Obtendo todos os documentos da coleção como uma lista de dicionários
-        users = [user for user in collection.find({})]  # pega cada elemento da collection e armazena na lista
-
-      # Convertendo o campo '_id' para uma string em cada documento, é necessário para retornar 
-        for user in users:
-          user["_id"] = str(user["_id"])
-
-        return {"users": users}
+        existingUser = collection.find_one({"email":user.email})
+        if existingUser !=None:
+          raise ValueError("Já existe um usuário cadastrado com esse email")
+        # Criptografando a senha antes de inserir no banco de dados
+        senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
+        user.password = senha_criptografada
+        collection.insert_one(dict(user))
+        return {"message": "Usuário cadastrado com sucesso", "data": user}
       except TypeError as erro:
-        return{"Erro ao listar usuários: ":erro}
-
-  @staticmethod
-  def getUser(email):
-      try:
-          users = collection.find({"email": email})
-          found_users = []
-          for user in users:
-              # Convert ObjectId to string if needed
-              user["_id"] = str(user["_id"])
-              found_users.append(user)
-          return found_users
-      except Exception as e:
-          return {"error": f"Error while retrieving user: {e}"}
-
-  @staticmethod
-  def getSingleUser(email):
-      try:
-          user = collection.find_one({"email": email})
-          return user
-      except Exception as e:
-          return {"error": f"Error while retrieving user: {e}"}
-
-  @staticmethod
-  def editUser(email):
-    try:
-      user  = collection.find({"email":email})
-      return user
-    except TypeError as erro:
-      return erro
+        return {"message": "Erro ao cadastrar usuário", "erro": str(erro)}
+      except ValueError as erro:
+        return {"message":"erro ao cadastrar usuário","erro":str(erro)}
     
-  @staticmethod
-  def updateUser(user_data):
+    @staticmethod
+    def getAllUsers():
+        try:
+      # Obtendo todos os documentos da coleção como uma lista de dicionários
+          users = [user for user in collection.find({})]  # pega cada elemento da collection e armazena na lista
+
+        # Convertendo o campo '_id' para uma string em cada documento, é necessário para retornar 
+          for user in users:
+            user["_id"] = str(user["_id"])
+
+          return {"users": users}
+        except TypeError as erro:
+          return{"Erro ao listar usuários: ":erro}
+
+    @staticmethod
+    def getUser(email):
+        try:
+            users = collection.find({"email": email})
+            found_users = []
+            for user in users:
+                # Convert ObjectId to string if needed
+                user["_id"] = str(user["_id"])
+                found_users.append(user)
+            return found_users
+        except Exception as e:
+            return {"error": f"Error while retrieving user: {e}"}
+
+    @staticmethod
+    def getSingleUser(email):
+        try:
+            user = collection.find_one({"email": email})
+            return user
+        except Exception as e:
+            return {"error": f"Error while retrieving user: {e}"}
+
+    @staticmethod
+    def editUser(email):
       try:
-          query = {"email": user_data["email"]}
+        user  = collection.find({"email":email})
+        return user
+      except TypeError as erro:
+        return erro
+      
+    @staticmethod
+    def updateUser(user_data):
+        try:
+            query = {"email": user_data["email"]}
 
-          campos = ["username", "email", "tipo", "password"]
+            campos = ["username", "email", "tipo", "password"]
 
-          camposAtualizados = {}
-          for campo in campos:
-            if campo in user_data and user_data[campo] is not None:
-                camposAtualizados[campo] = user_data[campo]
+            camposAtualizados = {}
+            for campo in campos:
+              if campo in user_data and user_data[campo] is not None:
+                  camposAtualizados[campo] = user_data[campo]
 
-          new_values = {"$set": camposAtualizados}
+            new_values = {"$set": camposAtualizados}
 
-          result = collection.update_one(query, new_values)
+            result = collection.update_one(query, new_values)
 
-          if result.modified_count > 0:
-              return {"message": "Usuário atualizado com sucesso"}
-          else:
-              return {"message": "Nenhum usuário atualizado. Verifique o email fornecido."}
-      except Exception as e:
-          print(f"Erro ao atualizar usuário: {e}")
-          return {"erro": f"Erro ao atualizar usuário: {e}"}
+            if result.modified_count > 0:
+                return {"message": "Usuário atualizado com sucesso"}
+            else:
+                return {"message": "Nenhum usuário atualizado. Verifique o email fornecido."}
+        except Exception as e:
+            print(f"Erro ao atualizar usuário: {e}")
+            return {"erro": f"Erro ao atualizar usuário: {e}"}
+        
 
-  @staticmethod
-  def deleteUser(email):
-    try:
-      query  = {"email":email}
-      collection.delete_one(query)
-      return {"message":"usuário deletado com sucesso: "}
-    except TypeError as erro:
-      return{"erro ao deletar usuário: ":erro}
+    @staticmethod
+    def update_user_senha(user_data):
+        try:
+            query = {"email": user_data["email"]}
+            new_password = str(user_data["password"])
+            senha_criptografada = hashlib.sha256(new_password.encode()).hexdigest()
+            new_values = {"$set": {"password":senha_criptografada}}
+            result = collection.update_one(query, new_values)
+
+            if result.modified_count > 0:
+                return {"message": "Usuário atualizado com sucesso"}
+            else:
+                return {"message": "Nenhum usuário atualizado. Verifique o email fornecido."}
+        except Exception as e:
+            print(f"Erro ao atualizar usuário: {e}")
+            return {"erro": f"Erro ao atualizar usuário: {e}"}
+
+    @staticmethod
+    def deleteUser(email):
+      try:
+        query  = {"email":email}
+        collection.delete_one(query)
+        return {"message":"usuário deletado com sucesso: "}
+      except TypeError as erro:
+        return{"erro ao deletar usuário: ":erro}
 
 
-  
+    
