@@ -19,27 +19,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/validar-token")
+@app.get("/validar-token", tags=["login"])
 async def validar_token(Authorization: Header= Depends(oauth2_scheme) ):
     return LoginController.retornar_token(Authorization)
     
-@app.get("/validar-token-admin")
+@app.get("/validar-token-admin", tags=["login"])
 async def validar_token_admin(Authorization: Header= Depends(oauth2_scheme) ):
    return LoginController.retornar_token_admin(Authorization)
 
-@app.get("/tipo-usuario/{token}")
+@app.get("/tipo-usuario/{token}", tags=["login"])
 async def retornar_tipo_usuario(token:str):#Authorization: Annotated[str, Header()]
     return LoginController.tipo_token(token)
    
-@app.post("/login")
+@app.post("/login", tags=["login"])
 async def login_for_access_token(user_data: UserLogin) :
-    try:
+    controller = LoginController()
+    return controller.login(user_data.email, user_data.password)
+    """try:
         controller = LoginController()
         content = controller.login(user_data.email, user_data.password)
         return content
     except:
         print("As senhas estão erradas")
-        return JSONResponse(content={"message": "Por favor tente novamente"}, status_code=400)
+        return JSONResponse(content={"message": "Por favor tente novamente"}, status_code=400)"""
 
 
 # rota teste para autenticação
