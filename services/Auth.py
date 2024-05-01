@@ -9,7 +9,7 @@ collection_name = "users"
 
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
-collection = db[collection_name] # todas as operações de usuarios podem usar essa collection
+collection = db[collection_name] 
 
 class Authenticator:
     def __init__(self):
@@ -19,7 +19,7 @@ class Authenticator:
         try:
             user = self.get_user(email, password)
             if not user:
-                raise Exceptions.lancar_excecao_login()
+                raise Exceptions.user_senha_incorretos()
             print("Achou o usuário")
 
             senha_armazenada = user["password"]        
@@ -27,7 +27,7 @@ class Authenticator:
                 return user
             
         except Exception:
-            raise Exceptions.lancar_excecao_login()
+            raise Exceptions.user_senha_incorretos()
         
 
     # esta função pesquisa um usuário no banco por email e password (encriptado)
