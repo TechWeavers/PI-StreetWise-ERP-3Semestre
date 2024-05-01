@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from datetime import datetime, timedelta,timezone   
 import logging
+from services.Exceptions import Exceptions
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 600 # tempo de expiração do token
@@ -25,6 +26,7 @@ class Token:
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             return payload
+            
         except jwt.ExpiredSignatureError:
             logging.error("Token expirado: %s", token)
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expirado")
@@ -34,22 +36,15 @@ class Token:
     
     def retornar_token_admin(self,token:str):
         try:
-            credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Apenas administradores tem acesso a essa função",
-            headers={"WWW-Authenticate": "Bearer"},
-            )
             token = self.verificar_token(token)
             tipo =  token["sub"]
             if tipo!="Administrador":
-                raise credentials_exception
+                raise Exceptions.acesso_restrito_adm()
             else:
                 print(tipo)
                 return token     
         except Exception:
-            raise credentials_exception
-    
-    # este método não está funcionando ainda
+            raise Exceptions.acesso_restrito_adm()
 
 
 

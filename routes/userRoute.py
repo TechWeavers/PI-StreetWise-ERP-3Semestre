@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 @userAPI.post("/novo-usuario", tags=["usuarios"])
-async def createUser(user:User, Authorization: Annotated[Header, Depends(validar_token_admin)]):
+async def createUser(user:User, Authorization: Annotated[Header, Depends(validar_token_admin)]): 
      return ControllerUser.insertUser(user)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
@@ -29,17 +29,15 @@ async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)
 @userAPI.get("/buscar-usuario/{email}", tags=["usuarios"]) 
 async def buscarUsuario(email:str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerUser.getUser(email)
-# buscando um usuario por email, pois é atributo unico
 
 @userAPI.get("/editar-usuario/{email}", tags=["usuarios"])
 async def editarUsuario(email:str, Authorization: Annotated[Header, Depends(validar_token_admin)]):
-     user = ControllerUser.getUser(email) # busca o usuário para atualizar
+     user = ControllerUser.getUser(email)
      return user # para carregar os dados do usuário encontrado na página (spa) de atualizar dados
 
 @userAPI.patch("/atualizar-usuario", tags=["usuarios"]) 
 async def atualizarUsuario(user:User, Authorization: Annotated[Header, Depends(validar_token_admin)]):
      return ControllerUser.updateUser(dict(user))
-# atualiza o usuario passando um objeto usuario no corpo da requisição, e chama a função de update, enviando os dados de atualização no corpo da requisição
 
 @userAPI.delete("/deletar-usuario/{email}", tags=["usuarios"])
 async def excluirUsuarios(email:str, Authorization: Annotated[Header, Depends(validar_token_admin)]):

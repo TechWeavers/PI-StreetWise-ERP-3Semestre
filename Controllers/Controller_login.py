@@ -5,20 +5,20 @@ from services.Auth import Authenticator # importa o autenticador de usuário
 from datetime import datetime, timedelta, timezone
 from Controllers.token import ACCESS_TOKEN_EXPIRE_MINUTES,Token
 from fastapi import HTTPException, status
+from services.Exceptions import Exceptions
 
 class LoginController:
     def __init__(self):
         pass
     
-    def login(self, user: str, password: str) -> str:
-        print(user)
-        print(password)
+    def login(self, email: str, password: str) -> str:
         jwt_token = Token()  
         auth = Authenticator()
       
-        usuario = auth.authenticate_user(user,password)
-        username = usuario["username"]
-        print(username)
+        usuario = auth.authenticate_user(email,password)
+
+        email = usuario["email"]
+        print(email)
         if usuario:
             senha_armazenada = usuario["password"]
             print(senha_armazenada)
@@ -33,11 +33,6 @@ class LoginController:
             return False
 
     def retornar_token_admin( token: str | None = None):
-        credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Apenas administradores tem acesso a essa função",
-        headers={"WWW-Authenticate": "Bearer"},
-        )
         try:
             jwt_token = Token() 
             jwt = jwt_token.verificar_token(token) 
@@ -46,9 +41,9 @@ class LoginController:
                 print(tipo)
                 return jwt
             else:
-                raise credentials_exception
+                raise Exceptions.acesso_restrito_adm()
         except Exception:
-            raise credentials_exception
+            raise Exceptions.acesso_restrito_adm()
         
     def retornar_token(Authorization:str):
         jwt_token  = Token()
@@ -56,4 +51,6 @@ class LoginController:
         if not token:
             raise HTTPException(status_code=401, detail="Usuário não autenticado")
         return token
+    
+    
 
