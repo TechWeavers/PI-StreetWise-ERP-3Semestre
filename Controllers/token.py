@@ -39,6 +39,9 @@ class Token:
                 return token     
         except Exception:
             raise Exceptions.acesso_restrito_adm()
+        
+
+    
 
 
 

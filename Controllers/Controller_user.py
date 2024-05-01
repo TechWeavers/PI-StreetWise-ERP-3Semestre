@@ -22,7 +22,7 @@ class ControllerUser:
     def insertUser(user:User)->dict:
       try:
         existingUser = collection.find_one({"email":user.email})
-        if existingUser !=None:
+        if existingUser :
           raise Exceptions.usuario_existente()
   
         senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
@@ -30,12 +30,11 @@ class ControllerUser:
         print(user)
         result = collection.insert_one(dict(user))
         if not result:
-          raise HTTPException
+          raise ValueError("Erro ao manipular usuário")
         return {"message": status.HTTP_200_OK}
-      #except Exception:
-        #raise Exceptions.usuario_existente()
       except HTTPException:
-        print(logging.ERROR)
+        raise Exceptions.usuario_existente()
+      except ValueError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
      
       

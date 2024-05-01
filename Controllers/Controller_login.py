@@ -1,12 +1,10 @@
-
-import hashlib
 from Controllers.token import Token
 from services.Auth import Authenticator # importa o autenticador de usuário
 from datetime import datetime, timedelta, timezone
 from Controllers.token import ACCESS_TOKEN_EXPIRE_MINUTES,Token
 from fastapi import HTTPException, status
 from services.Exceptions import Exceptions
-import logging
+
 
 class LoginController:
     def __init__(self):
@@ -20,8 +18,8 @@ class LoginController:
             usuario = auth.authenticate_user(email,password)
             if usuario:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-                jwt = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
-                return jwt
+                token = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
+                return token
             else:
                 raise Exceptions.user_senha_incorretos()
         except Exception:
@@ -46,6 +44,22 @@ class LoginController:
         if not token:
             raise Exceptions.token_invalido()
         return token
+  
+      
+    def tipo_token(token:str):
+        print(token)
+        try:
+            jwt_token = Token()
+            token = jwt_token.verificar_token(token)
+            print(token)
+            tipo =  token["sub"]
+            if tipo=="Administrador" or tipo =="Tatuador":
+                print(tipo)
+                return tipo    
+            else:
+                raise Exceptions.token_invalido()     
+        except Exception:
+            raise Exceptions.acesso_restrito_adm()
     
     
 
