@@ -3,6 +3,7 @@ from models.userModel import User
 import hashlib
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
+import logging
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
@@ -23,15 +24,18 @@ class ControllerUser:
         existingUser = collection.find_one({"email":user.email})
         if existingUser !=None:
           raise Exceptions.usuario_existente()
-        # Criptografando a senha antes de inserir no banco de dados
+  
         senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
         user.password = senha_criptografada
+        print(user)
         result = collection.insert_one(dict(user))
         if not result:
-           raise HTTPException
-      except Exception:
-        raise Exceptions.usuario_existente()
+          raise HTTPException
+        return {"message": status.HTTP_200_OK}
+      #except Exception:
+        #raise Exceptions.usuario_existente()
       except HTTPException:
+        print(logging.ERROR)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
      
       
