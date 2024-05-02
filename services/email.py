@@ -88,7 +88,7 @@ async def senhaRedefinida(user: User):
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
             <p>Equipe da InkHouse</p>
-        """.format(username=user["username"])
+        """.format(username=user["name"])
  
         message = MessageSchema(
             subject="A redefinição de senha foi um sucesso! - InkHouse",
