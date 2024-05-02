@@ -101,6 +101,7 @@ class ControllerUser:
             new_values = {"$set": camposAtualizados}
 
             result = collection.update_one(query, new_values)
+            print(result)
 
             if result.modified_count > 0:
                 return {"message": "Usuário atualizado com sucesso"}

@@ -36,6 +36,5 @@ class Exceptions(Exception):
   def erro_manipular_usuario():
     credentials_exception = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
-    detail="Erro ao manipular usuário no banco de dados",
-    headers={"WWW-Authenticate": " Data duplicated"},)
+    detail="Erro ao manipular usuário no banco de dados",)
     return credentials_exception
