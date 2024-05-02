@@ -87,20 +87,24 @@ class ControllerUser:
         raise Exceptions.erro_manipular_usuario()
       
     @staticmethod
-    def updateUser(user_data):
+    def updateUser(user_data: dict): 
         try:
+            print(user_data)
             query = {"email": user_data["email"]}
-
+            print(query)
             campos = ["name", "email", "tipo", "password"]
 
             camposAtualizados = {}
             for campo in campos:
               if campo in user_data and user_data[campo] is not None:
                   camposAtualizados[campo] = user_data[campo]
+              if campo == "password":
+                 camposAtualizados[campo] = hashlib.sha256(str(user_data[campo]).encode()).hexdigest()
 
             new_values = {"$set": camposAtualizados}
-
+            print(new_values)
             result = collection.update_one(query, new_values)
+            print(result)
 
             if result.modified_count > 0:
                 return {"message": "Usuário atualizado com sucesso"}
