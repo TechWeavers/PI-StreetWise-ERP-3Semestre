@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 @userAPI.post("/novo-usuario", tags=["usuarios"])
-async def createUser(user:User,Authorization: Annotated[Header, Depends(validar_token_admin)]): #
+async def createUser(user:User, Authorization: Annotated[Header, Depends(validar_token_admin)]): #
      return ControllerUser.insertUser(user)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
@@ -35,12 +35,12 @@ async def editarUsuario(email:str, Authorization: Annotated[Header, Depends(vali
      user = ControllerUser.getUser(email)
      return user # para carregar os dados do usuário encontrado na página (spa) de atualizar dados
 
-@userAPI.patch("/atualizar-usuario", tags=["usuarios"]) 
-async def atualizarUsuario(user:User, Authorization: Annotated[Header, Depends(validar_token_admin)]):
-     return ControllerUser.updateUser(dict(user))
+@userAPI.patch("/atualizar-usuario/{email}", tags=["usuarios"]) 
+async def atualizarUsuario(user:User, email ,Authorization: Annotated[Header, Depends(validar_token_admin)]):
+     return ControllerUser.updateUser(dict(user), email)
 
 @userAPI.delete("/deletar-usuario/{email}", tags=["usuarios"])
 async def excluirUsuarios(email:str, Authorization: Annotated[Header, Depends(validar_token_admin)]):
-     return ControllerUser.deleteUser(email)
+     return ControllerUser.deleteUser(email,)
 
 app.include_router(userAPI)

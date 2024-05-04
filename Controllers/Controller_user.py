@@ -58,6 +58,7 @@ class ControllerUser:
     def getUser(email):
         try:
             users = collection.find({"email": email})
+            print(users)
             if not users:
                raise Exceptions.erro_manipular_usuario()
             
@@ -87,19 +88,22 @@ class ControllerUser:
         raise Exceptions.erro_manipular_usuario()
       
     @staticmethod
-    def updateUser(user_data):
+    def updateUser(user_data: dict, email:str): 
         try:
-            query = {"email": user_data["email"]}
-
+            print(user_data)
+            query = {"email": email}
+            print(query)
             campos = ["name", "email", "tipo", "password"]
 
             camposAtualizados = {}
             for campo in campos:
-              if campo in user_data and user_data[campo] is not None:
-                  camposAtualizados[campo] = user_data[campo]
+                if campo in user_data and (user_data[campo] is not None and user_data[campo] != ""):
+                    camposAtualizados[campo] = user_data[campo]
+                if campo == "password":
+                    camposAtualizados[campo] = hashlib.sha256(str(user_data[campo]).encode()).hexdigest()
 
             new_values = {"$set": camposAtualizados}
-
+            print(new_values)
             result = collection.update_one(query, new_values)
             print(result)
 
@@ -108,24 +112,27 @@ class ControllerUser:
             else:
                 raise Exceptions.erro_manipular_usuario()
         except Exception:
-         raise Exceptions.erro_manipular_usuario()
+            raise Exceptions.erro_manipular_usuario()
+
         
 
     @staticmethod
     def update_user_senha(user_data):
-        try:
-            query = {"email": user_data["email"]}
-            new_password = str(user_data["password"])
-            senha_criptografada = hashlib.sha256(new_password.encode()).hexdigest()
-            new_values = {"$set": {"password":senha_criptografada}}
-            result = collection.update_one(query, new_values)
+      try:
+          query = {"email": str(user_data["email"])}
+          new_password = str(user_data["password"])
+          senha_criptografada = hashlib.sha256(new_password.encode()).hexdigest()
+          new_values = {"$set": {"password":senha_criptografada}}
+          result = collection.update_one(query, new_values)
 
-            if result.modified_count > 0:
-                return {"message": "Usuário atualizado com sucesso"}
-            else:
-                raise Exceptions.erro_manipular_usuario()
-        except Exception:
-          raise Exceptions.erro_manipular_usuario()
+
+          if result.modified_count > 0:
+              return {"message": "Senha do usuário atualizada com sucesso"}
+          else:
+              raise Exceptions.erro_manipular_usuario()
+      except Exception as e:
+          print(f"Erro ao atualizar a senha do usuário: {str(e)}")
+          raise HTTPException(status_code=500, detail="Erro interno ao atualizar a senha do usuário")
 
     @staticmethod
     def deleteUser(email):

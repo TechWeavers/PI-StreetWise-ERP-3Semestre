@@ -19,7 +19,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
  
@@ -47,20 +47,15 @@ async def esqueceu_senha(email: emailClass) -> str:
         raise HTTPException(500, f"Erro ao enviar o e-mail: {str(e)}")
  
 @app.put("/RedefinirSenha")
-async def redefinir_senha(senhas:SenhaClass, Authorization: Annotated[Header, Depends(validar_token)]) -> JSONResponse:
-    print(Authorization)
+async def redefinir_senha(senhas: SenhaClass, Authorization: Annotated[Header, Depends(validar_token)]) -> JSONResponse:
     if senhas.senha != senhas.senhaConfirmacao:
         return JSONResponse(content={"message": "As senhas precisam ser iguais para a alteração."}, status_code=400)
 
     try:
-
         user_data = {"email": Authorization["sub"], "password": senhas.senha}
         ControllerUser.update_user_senha(user_data)
- 
         return {"message": "Senha redefinida com sucesso"}
- 
     except HTTPException as http_exception:
         raise http_exception
- 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao alterar a senha: {str(e)}")
