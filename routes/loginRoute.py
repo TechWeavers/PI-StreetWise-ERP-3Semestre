@@ -35,13 +35,7 @@ async def retornar_tipo_usuario(token:str):#Authorization: Annotated[str, Header
 async def login_for_access_token(user_data: UserLogin) :
     controller = LoginController()
     return controller.login(user_data.email, user_data.password)
-    """try:
-        controller = LoginController()
-        content = controller.login(user_data.email, user_data.password)
-        return content
-    except:
-        print("As senhas estão erradas")
-        return JSONResponse(content={"message": "Por favor tente novamente"}, status_code=400)"""
+
 
 
 # rota teste para autenticação
