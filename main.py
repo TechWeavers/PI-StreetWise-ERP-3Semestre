@@ -4,13 +4,14 @@ import subprocess
 services = [
     {"file": "routes.loginRoute", "port": 8000},
     {"file": "routes.userRoute", "port": 8001},
+     {"file": "routes.redefinicaoRoute", "port": 8002},
     # Adicione mais serviços conforme necessário
 ]
 
 processes = []
 
 for service in services:
-    cmd = f"uvicorn {service['file']}:app --port {service['port']} --reload --host 127.0.0.1"
+    cmd = f"uvicorn {service['file']}:app --port {service['port']} --reload"
     process = subprocess.Popen(cmd, shell=True)
     processes.append(process)
 
