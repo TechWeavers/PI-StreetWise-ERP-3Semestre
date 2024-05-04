@@ -33,8 +33,20 @@ class Exceptions(Exception):
     detail="Já existe um usuário cadastrado com este email! Clique em redefinir senha ou se cadastre usando um novo email",)
     return credentials_exception
   
+  def cliente_existente():
+    credentials_exception = ValueError(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Já existe um cliente cadastrado com este CPF! ",)
+    return credentials_exception
+  
   def erro_manipular_usuario():
     credentials_exception = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="Erro ao manipular usuário no banco de dados",)
+    return credentials_exception
+  
+  def erro_manipular_cliente():
+    credentials_exception = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Erro ao manipular cliente no banco de dados",)
     return credentials_exception

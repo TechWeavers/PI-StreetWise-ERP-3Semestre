@@ -4,7 +4,8 @@ import subprocess
 services = [
     {"file": "routes.loginRoute", "port": 8000},
     {"file": "routes.userRoute", "port": 8001},
-     {"file": "routes.redefinicaoRoute", "port": 8002},
+    {"file": "routes.redefinicaoRoute", "port": 8002},
+    {"file": "routes.clienteRoute", "port": 8003},
     # Adicione mais serviços conforme necessário
 ]
 
