@@ -88,19 +88,19 @@ class ControllerUser:
         raise Exceptions.erro_manipular_usuario()
       
     @staticmethod
-    def updateUser(user_data: dict): 
+    def updateUser(user_data: dict, email:str): 
         try:
             print(user_data)
-            query = {"email": user_data["email"]}
+            query = {"email": email}
             print(query)
             campos = ["name", "email", "tipo", "password"]
 
             camposAtualizados = {}
             for campo in campos:
-              if campo in user_data and user_data[campo] is not None:
-                  camposAtualizados[campo] = user_data[campo]
-              if campo == "password":
-                 camposAtualizados[campo] = hashlib.sha256(str(user_data[campo]).encode()).hexdigest()
+                if campo in user_data and (user_data[campo] is not None and user_data[campo] != ""):
+                    camposAtualizados[campo] = user_data[campo]
+                if campo == "password":
+                    camposAtualizados[campo] = hashlib.sha256(str(user_data[campo]).encode()).hexdigest()
 
             new_values = {"$set": camposAtualizados}
             print(new_values)
@@ -112,7 +112,8 @@ class ControllerUser:
             else:
                 raise Exceptions.erro_manipular_usuario()
         except Exception:
-         raise Exceptions.erro_manipular_usuario()
+            raise Exceptions.erro_manipular_usuario()
+
         
 
     @staticmethod
