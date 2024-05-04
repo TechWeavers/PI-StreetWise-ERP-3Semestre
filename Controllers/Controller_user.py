@@ -58,6 +58,7 @@ class ControllerUser:
     def getUser(email):
         try:
             users = collection.find({"email": email})
+            print(users)
             if not users:
                raise Exceptions.erro_manipular_usuario()
             
@@ -116,19 +117,21 @@ class ControllerUser:
 
     @staticmethod
     def update_user_senha(user_data):
-        try:
-            query = {"email": user_data["email"]}
-            new_password = str(user_data["password"])
-            senha_criptografada = hashlib.sha256(new_password.encode()).hexdigest()
-            new_values = {"$set": {"password":senha_criptografada}}
-            result = collection.update_one(query, new_values)
+      try:
+          query = {"email": str(user_data["email"])}
+          new_password = str(user_data["password"])
+          senha_criptografada = hashlib.sha256(new_password.encode()).hexdigest()
+          new_values = {"$set": {"password":senha_criptografada}}
+          result = collection.update_one(query, new_values)
 
-            if result.modified_count > 0:
-                return {"message": "Usuário atualizado com sucesso"}
-            else:
-                raise Exceptions.erro_manipular_usuario()
-        except Exception:
-          raise Exceptions.erro_manipular_usuario()
+
+          if result.modified_count > 0:
+              return {"message": "Senha do usuário atualizada com sucesso"}
+          else:
+              raise Exceptions.erro_manipular_usuario()
+      except Exception as e:
+          print(f"Erro ao atualizar a senha do usuário: {str(e)}")
+          raise HTTPException(status_code=500, detail="Erro interno ao atualizar a senha do usuário")
 
     @staticmethod
     def deleteUser(email):
