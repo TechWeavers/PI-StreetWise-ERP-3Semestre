@@ -2,6 +2,7 @@ from models.clienteModel import Cliente
 from configs.db import create_mongodb_connection
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
+import datetime
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
@@ -72,7 +73,7 @@ class ControllerCliente:
       
 
     @staticmethod
-    def updateFicha(cliente_data: dict, cpf:str): 
+    def updateCliente(cliente_data: dict, cpf:str): 
         try:
             query = {"cpf": cpf}
             campos = ["nome", "cpf", "telefone", "email","idade"]
@@ -108,3 +109,32 @@ class ControllerCliente:
                raise Exceptions.erro_manipular_cliente()
       except Exception:
          raise Exceptions.erro_manipular_cliente()
+      
+
+    def salvarFicha(self,ficha_data: dict, cpf:str): 
+        try:
+         query = {"cpf": cpf}
+         dadosAtualizados = self.editarFicha(ficha_data)
+         new_values = {"$set": dadosAtualizados}
+         result = collection.update_one(query, new_values)
+         
+         if result:
+               return {"message": "ficha atualizada com sucesso"}
+         else:
+               raise Exceptions.erro_manipular_cliente()
+        except Exception:
+         raise Exceptions.erro_manipular_cliente()
+        
+    @staticmethod
+    def editarFicha(ficha_data:dict):
+         data_atual = datetime.datetime.now().strftime('%d/%m/%Y')
+         print(data_atual)
+         campos = ["tratamento","desc_tratamento", "cirurgia","desc_cirurgia," "alergia","desc_alergia","diabetes","desc_diabetes", "convulsao","desc_convulsao","doencas_transmissiveis","desc_doencas_transmissiveis","cardiaco","cancer","drogas","pressao","anemia","hemofilia","hepatite","outro_desc","data_atualizacao"]
+         camposAtualizados = {}
+         for campo in campos:
+               if campo in ficha_data and (ficha_data[campo] is not None and ficha_data[campo] != ""):
+                  camposAtualizados[campo] = ficha_data[campo]
+               if campo=="data_atualizacao":
+                  camposAtualizados[campo] = data_atual
+         return camposAtualizados
+      

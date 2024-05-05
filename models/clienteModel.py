@@ -14,7 +14,7 @@ class Cliente(BaseModel):
   alergia: Optional[bool]= None
   desc_alergia: Optional[str]= None
   diabetes: Optional[bool]= None
-  diabetes_desc: Optional[str]= None
+  desc_diabetes: Optional[str]= None
   convulsao: Optional[bool]= None
   desc_convulsao: Optional[str]= None
   doencas_transmissiveis: Optional[bool]= None
@@ -27,4 +27,4 @@ class Cliente(BaseModel):
   hemofilia: Optional[bool] = None
   hepatite: Optional[bool]= None
   outro_desc: Optional[str] = None
-  data_ficha : Optional[str] = None
+  data_atualizacao : Optional[str] = None

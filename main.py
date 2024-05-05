@@ -18,3 +18,6 @@ for service in services:
 
 for process in processes:
     process.wait()
+
+
+ 
