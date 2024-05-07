@@ -15,7 +15,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
-# CRUD de clientes e ficha de anamnese funcionando por completo ja
+
 
 @clienteAPI.post("/novo-cliente", tags=["clientes"])
 async def createUser(cli:Cliente, Authorization: Annotated[Header, Depends(validar_token)]): #
@@ -37,7 +37,8 @@ async def editarUsuario(cpf:str, Authorization: Annotated[Header, Depends(valida
 
 @clienteAPI.patch("/atualizar-cliente/{cpf}", tags=["clientes"]) 
 async def atualizarCliente(cliente:Cliente, cpf:str ,Authorization: Annotated[Header, Depends(validar_token)]):
-     return ControllerCliente.updateCliente(dict(cliente), cpf)
+     controller = ControllerCliente()
+     return controller.updateCliente(dict(cliente), cpf)
 
 @clienteAPI.delete("/deletar-cliente/{cpf}", tags=["cliente"])
 async def excluirCliente(cpf:str, Authorization: Annotated[Header, Depends(validar_token)]):

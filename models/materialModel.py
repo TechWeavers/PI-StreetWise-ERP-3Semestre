@@ -4,4 +4,4 @@ class Material(BaseModel):
   nome: str
   quantidade: int
   valor_unitario: float
-  data_atualizacao: str
+  data_atualizacao: str | None = None

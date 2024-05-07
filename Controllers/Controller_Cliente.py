@@ -72,28 +72,41 @@ class ControllerCliente:
         raise Exceptions.erro_manipular_usuario()
       
 
-    @staticmethod
-    def updateCliente(cliente_data: dict, cpf:str): 
+
+    def updateCliente(self,cliente_data: dict, cpf:str): 
         try:
             query = {"cpf": cpf}
-            campos = ["nome", "cpf", "telefone", "email","idade"]
+            """campos = ["nome", "cpf", "telefone", "email","idade"]
 
             camposAtualizados = {}
             for campo in campos:
                 if campo in cliente_data and (cliente_data[campo] is not None and cliente_data[campo] != ""):
-                    camposAtualizados[campo] = cliente_data[campo]
+                    camposAtualizados[campo] = cliente_data[campo]"""
+            dadosAtualizados = self.editarDados(cliente_data)
 
-            new_values = {"$set": camposAtualizados}
+            new_values = {"$set": dadosAtualizados}
             print(new_values)
             result = collection.update_one(query, new_values)
             print(result)
 
-            if result.modified_count > 0:
+            if result:
                 return {"message": "Usuário atualizado com sucesso"}
             else:
                 raise Exceptions.erro_manipular_cliente()
         except Exception:
             raise Exceptions.erro_manipular_cliente()
+        
+    @staticmethod
+    def editarDados(cliente_data:dict):
+       campos = ["nome", "cpf", "telefone", "email","idade"]
+
+       camposAtualizados = {}
+       for campo in campos:
+          if campo in cliente_data and (cliente_data[campo] is not None and cliente_data[campo] != ""):
+              camposAtualizados[campo] = cliente_data[campo]
+       return camposAtualizados
+
+       
         
 
     @staticmethod
