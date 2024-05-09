@@ -25,6 +25,5 @@ class Cliente(BaseModel):
   pressao: Optional[bool]= None
   anemia: Optional[bool]= None
   hemofilia: Optional[bool] = None
-  hepatite: Optional[bool]= None
-  outro_desc: Optional[str] = None
+  outro: Optional[str] = None
   data_atualizacao : Optional[str] = None
