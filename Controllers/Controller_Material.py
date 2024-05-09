@@ -78,20 +78,20 @@ class ControllerMaterial:
   def updateMaterial(self, material: dict, nome:str): 
         try:
             query = {"nome":nome}
-            campos = ["nome", "cpf", "telefone", "email","idade"]
+            """campos = ["nome", "cpf", "telefone", "email","idade"]
 
             camposAtualizados = {}
             for campo in campos:
-                if campo in material and (material[campo] is not None and material[campo] != ""):
-                    camposAtualizados[campo] = material[campo]
-            #dadosAtualizados = self.editarDados(material)
+                if campo in cliente_data and (cliente_data[campo] is not None and cliente_data[campo] != ""):
+                    camposAtualizados[campo] = cliente_data[campo]"""
+            dadosAtualizados = self.editarDados(material)
 
-            new_values = {"$set": camposAtualizados}
+            new_values = {"$set": dadosAtualizados}
             print(new_values)
             result = collection.update_one(query, new_values)
             print(result)
 
-            if result.matched_count>0:
+            if result:
                 return {"message": "material atualizado com sucesso"}
             else:
                 raise Exceptions.erro_manipular_material()
