@@ -34,7 +34,7 @@ async def atualizarCliente(mat:Material, nome:str ,Authorization: Annotated[Head
      return controller.updateMaterial(dict(mat), nome)
 
 @materialAPI.delete("/deletar-material/{nome}", tags=["materiais"])
-async def excluirMaterial(nome:str, Authorization: Annotated[Header, Depends(validar_token)]):
+async def excluirMaterial(nome:str, Authorization: Annotated[Header, Depends(validar_token_admin)]):
      return ControllerMaterial.deleteMaterial(nome)
 
 app.include_router(materialAPI)
