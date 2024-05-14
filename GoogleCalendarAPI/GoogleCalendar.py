@@ -8,7 +8,14 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from fastapi import HTTPException
 
-# If modifying these scopes, delete the file token.json.
+# testando formatações de datas
+data_atual = "15/05/2024"
+data = data_atual.split("/")
+dia  = data[0]
+mes  = data[1]
+ano  = data[2]
+data_format = ano+"-"+mes+"-"+dia+"T"+"10:00:00"
+data_format_final = ano+"-"+mes+"-"+dia+"T"+"15:00:00"
 
 
 class GoogleCalendar():
@@ -45,16 +52,17 @@ class GoogleCalendar():
         try:
           self.auth_api()
           print("chegu aqui")
+          print(data_format)
           event = {
               'summary': 'CHUPA MINHA BOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
               'description': 'TO CORINGANDODDDDDOOOOOOOOOO22222222222',
               'start': {
-                  'dateTime': (datetime.datetime.now() + datetime.timedelta(days=1)).replace(hour=19, minute=0).isoformat(),
-                  'timeZone': 'America/Los_Angeles',
+                  'dateTime': data_format,
+                  'timeZone': 'America/Sao_Paulo',
               },
               'end': {
-                  'dateTime': (datetime.datetime.now() + datetime.timedelta(days=1)).replace(hour=21, minute=0).isoformat(),
-                  'timeZone': 'America/Los_Angeles',
+                  'dateTime': data_format_final,
+                  'timeZone': 'America/Sao_Paulo',
               },
                 'attendees': [
                   {'email': 'contacomercial155@gmail.com'},
@@ -73,6 +81,7 @@ class GoogleCalendar():
         
         created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
         print('Event created:', created_event.get('htmlLink'))
+        
 
         now = datetime.datetime.now().isoformat() + "Z"
         print("Getting the upcoming 10 events")
@@ -127,5 +136,3 @@ class GoogleCalendar():
             print(f"An error occurred: {error}")
 
 
-api = GoogleCalendar()
-api.insert_event()
