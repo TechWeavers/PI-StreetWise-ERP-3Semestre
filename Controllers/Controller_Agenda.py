@@ -7,38 +7,33 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-service = build("calendar", "v3", credentials=creds)
-SCOPES = ["https://www.googleapis.com/auth/calendar.events"]#.readonly
-# Configurações básicas pra rodar a API em qualquer método
-creds = None
-# The file token.json stores the user's access and refresh tokens, and is
-# created automatically when the authorization flow completes for the first
-# time.
-if os.path.exists("token.json"):
-  creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-# If there are no (valid) credentials available, let the user log in.
-if not creds or not creds.valid:
-  if creds and creds.expired and creds.refresh_token:
-    creds.refresh(Request())
-  else:
-    flow = InstalledAppFlow.from_client_secrets_file(
-        "credentials.json", SCOPES
-    )
-    creds = flow.run_local_server(port=0)
-  # Save the credentials for the next run
-  with open("token.json", "w") as token:
-    token.write(creds.to_json())
-
 class AgendaController:
+    SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
+
     def __init__(self) -> None:
-        pass
+        self.creds = None
+        self.service = None
+        self.authenticate()
 
-    def insertAgenda(agenda_data):
+    def authenticate(self):
+        if os.path.exists("token.json"):
+            self.creds = Credentials.from_authorized_user_file("token.json", self.SCOPES)
+        if not self.creds or not self.creds.valid:
+            if self.creds and self.creds.expired and self.creds.refresh_token:
+                self.creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file("credentials.json", self.SCOPES)
+                self.creds = flow.run_local_server(port=0)
+            with open("token.json", "w") as token:
+                token.write(self.creds.to_json())
 
+            self.service = build("calendar", "v3", credentials=self.creds)
+
+    def insertAgenda(self, agenda_data: dict):
         try:
             event = {
-                'summary': f"{agenda_data['nome']}",  # Utilizando f-string
-                'description': f"{agenda_data['desc']}",
+                'summary':"agenda teste controller", #f"{agenda_data['nome']}",
+                'description':"teste cpntroller", #f"{agenda_data['desc']}",
                 'start': {
                     'dateTime': (datetime.datetime.now() + datetime.timedelta(days=5)).replace(hour=14, minute=0).isoformat(),
                     'timeZone': 'America/Los_Angeles',
@@ -47,6 +42,9 @@ class AgendaController:
                     'dateTime': (datetime.datetime.now() + datetime.timedelta(days=5)).replace(hour=16, minute=0).isoformat(),
                     'timeZone': 'America/Los_Angeles',
                 },
+                 'attendees': [
+                {'email': 'contacomercial155@gmail.com'},
+                ],
                 'reminders': {
                     'useDefault': False,
                     'overrides': [
@@ -55,41 +53,38 @@ class AgendaController:
                     ],
                 },
             }
-            created_event = service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
+            created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
             print('Event created: %s' % (created_event.get('htmlLink')))
 
         except HttpError as error:
             print(f"An error occurred: {error}")
 
-    def getAllAgendamentos():
+    def getAllAgendamentos(self):
         try: 
             page_token = None
             while True:
-                events = service.events().list(calendarId='primary', pageToken=page_token).execute()
+                events = self.service.events().list(calendarId='primary', pageToken=page_token).execute()
                 for event in events['items']:
-                    print (event['summary'])
+                    print(event['summary'])
                 page_token = events.get('nextPageToken')
                 if not page_token:
                     break
         except HttpError as error:
             print(f"An error occurred: {error}")
-    
-    def deleteAgenda(agenda_ID):
+
+    def deleteAgenda(self, agenda_ID):
         try:
-            service.events().delete(calendarId='primary', eventId='eventId').execute()
+            self.service.events().delete(calendarId='primary', eventId='eventId').execute()
         except HttpError as error:
             print(f"An error occurred: {error}")
 
-    def updateAgendamento():
+    def updateAgendamento(self):
         try: 
-            # First retrieve the event from the API.
-            event = service.events().get(calendarId='primary', eventId='eventId').execute()
+            event = self.service.events().get(calendarId='primary', eventId='eventId').execute()
 
             event['summary'] = 'Appointment at Somewhere'
 
-            service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
-            print("update feito")
+            self.service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
+            print("Update feito")
         except HttpError as error:
             print(f"An error occurred: {error}")
-        
-        #NADA AQUI FOI TESTADO OU IMPLEMENTADO AINDA
