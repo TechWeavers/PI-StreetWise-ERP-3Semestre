@@ -7,6 +7,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from fastapi import HTTPException
+from models.agendamentoModel import Agendamento
+from Controllers.Controller_Agenda import Controller_Copia_Agendamento
 
 # testando formatações de datas
 data_atual = "15/05/2024"
@@ -48,24 +50,31 @@ class GoogleCalendar():
       self.service = build("calendar", "v3", credentials=self.creds)
 
 
-    def insert_event(self):
+    def insert_event(self, evento:Agendamento):
+        nome = evento.nome
+        descricao  = evento.descricao
+        data= self.formatar_data(evento.data)
+        hora_inicio = evento.hora_inicio+":00"
+        hora_fim = evento.hora_fim+":00"
+        email_convidado = evento.email_convidado
+       
         try:
           self.auth_api()
           print("chegu aqui")
           print(data_format)
           event = {
-              'summary': 'CHUPA MINHA BOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-              'description': 'TO CORINGANDODDDDDOOOOOOOOOO22222222222',
+              'summary': nome,
+              'description': descricao,
               'start': {
-                  'dateTime': data_format,
+                  'dateTime': data+"T"+hora_inicio,
                   'timeZone': 'America/Sao_Paulo',
               },
               'end': {
-                  'dateTime': data_format_final,
+                  'dateTime': data+"T"+hora_fim,
                   'timeZone': 'America/Sao_Paulo',
               },
                 'attendees': [
-                  {'email': 'contacomercial155@gmail.com'},
+                  {'email': email_convidado},
               
                 ],
               'reminders': {
@@ -76,14 +85,23 @@ class GoogleCalendar():
                   ],
               },
           }
+
+          
+
+          #copia_evento = event.copy()
         except Exception as erro:
            return {"erro aq chefia":str({erro})}
         
         created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
         print('Event created:', created_event.get('htmlLink'))
+        print('ID do evento:', created_event['id'])
+        copia_agendamento = event.copy()
+        controller_agendamento = Controller_Copia_Agendamento()
+        controller_agendamento.inserir_agendamento(copia_agendamento)
+        
         
 
-        now = datetime.datetime.now().isoformat() + "Z"
+        """now = datetime.datetime.now().isoformat() + "Z"
         print("Getting the upcoming 10 events")
         events_result = (
             self.service.events()
@@ -103,7 +121,17 @@ class GoogleCalendar():
         
         for event in events:
             start = event["start"].get("dateTime", event["start"].get("date"))
-            print(start, event["summary"])
+            print(start, event["summary"])"""
+        
+    def formatar_data(self,data:str):
+       #data_atual = "15/05/2024"
+       data_atual = data.split("/")
+       dia  = data_atual[0]
+       mes  = data_atual[1]
+       ano  = data_atual[2]
+       data_format = ano+"-"+mes+"-"+dia+"T"+"10:00:00"
+       data_format_final = ano+"-"+mes+"-"+dia#+"T"+"15:00:00"
+       return data_format_final
 
     def getAllAgendamentos(self):
         try: 
@@ -118,9 +146,10 @@ class GoogleCalendar():
         except HttpError as error:
             print(f"An error occurred: {error}")
 
-    def deleteAgenda(self, agenda_ID):
+    def deleteAgenda(self, event_ID):
         try:
-            self.service.events().delete(calendarId='primary', eventId='eventId').execute()
+            self.auth_api()
+            self.service.events().delete(calendarId='sixdevsfatec@gmail.com', eventId=event_ID).execute()
         except HttpError as error:
             print(f"An error occurred: {error}")
 

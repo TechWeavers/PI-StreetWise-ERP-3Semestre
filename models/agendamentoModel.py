@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-event = {
+"""event = {
               'summary': 'CHUPA MINHA BOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
               'description': 'TO CORINGANDODDDDDOOOOOOOOOO22222222222',
               'start': {
@@ -22,8 +22,9 @@ event = {
                       {'method': 'popup', 'minutes': 10},
                   ],
               },
-          }
+          }"""
 class Agendamento(BaseModel):
+ id: str | None = None
  nome: str
  descricao: str
  data: str
