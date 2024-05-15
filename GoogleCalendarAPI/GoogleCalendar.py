@@ -164,5 +164,9 @@ class GoogleCalendar():
 
             self.service.events().update(calendarId='sixdevsfatec@gmail.com', eventId=eventId, body=event).execute()
             print("Update feito ", evento_atualizado)
+
+            controller_copias = Controller_Copia_Agendamento()
+            controller_copias.updateAgendamento(evento_atualizado, eventId)
+            
         except HttpError as error:
             print(f"An error occurred: {error}")

@@ -49,9 +49,18 @@ class Controller_Copia_Agendamento():
   def updateAgendamento(self,agendamento_data: Agendamento, eventId:str): 
         try:
             query = {"id": eventId}
-            dadosAtualizados = self.editarDados(agendamento_data)
+            print(query)
+            #dadosAtualizados = self.editarDados(agendamento_data)
+            #print(dadosAtualizados)
 
-            new_values = {"$set": dadosAtualizados}
+            campos = ["id","nome", "descricao", "data", "hora_inicio","hora_fim","email_convidado"]
+            camposAtualizados = {}
+            for campo in campos:
+              if campo in agendamento_data and (agendamento_data[campo] is not None and agendamento_data[campo] != ""):
+                camposAtualizados[campo] = agendamento_data[campo]
+
+            print(camposAtualizados)
+            new_values = {"$set": camposAtualizados}
             print(new_values)
             result = collection.update_one(query, new_values)
             print(result)
@@ -65,10 +74,11 @@ class Controller_Copia_Agendamento():
         
   @staticmethod
   def editarDados(agendamento_data:Agendamento):
-      campos = ["nome", "descricao", "data", "hora_inicio","hora_fim","email_convidado"]
+      campos = ["id","nome", "descricao", "data", "hora_inicio","hora_fim","email_convidado"]
+      print(agendamento_data)
 
       camposAtualizados = {}
       for campo in campos:
         if campo in agendamento_data and (agendamento_data[campo] is not None and agendamento_data[campo] != ""):
-            camposAtualizados[campo] = agendamento_data[campo]
+          camposAtualizados[campo] = agendamento_data[campo]
       return camposAtualizados
