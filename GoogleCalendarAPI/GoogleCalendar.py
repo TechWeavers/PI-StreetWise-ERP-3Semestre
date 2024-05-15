@@ -88,14 +88,14 @@ class GoogleCalendar():
 
           
 
-          #copia_evento = event.copy()
+          
         except Exception as erro:
            return {"erro aq chefia":str({erro})}
         
         created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
         print('Event created:', created_event.get('htmlLink'))
-        print('ID do evento:', created_event['id'])
         copia_agendamento = event.copy()
+        copia_agendamento["id"] = created_event['id']
         controller_agendamento = Controller_Copia_Agendamento()
         controller_agendamento.inserir_agendamento(copia_agendamento)
         
@@ -133,19 +133,8 @@ class GoogleCalendar():
        data_format_final = ano+"-"+mes+"-"+dia#+"T"+"15:00:00"
        return data_format_final
 
-    def getAllAgendamentos(self):
-        try: 
-            page_token = None
-            while True:
-                events = self.service.events().list(calendarId='primary', pageToken=page_token).execute()
-                for event in events['items']:
-                    print(event['summary'])
-                page_token = events.get('nextPageToken')
-                if not page_token:
-                    break
-        except HttpError as error:
-            print(f"An error occurred: {error}")
-
+    #a função de listar agendamentos está no controller da cópia dos agendamentos
+   
     def deleteAgenda(self, event_ID):
         try:
             self.auth_api()
@@ -153,14 +142,17 @@ class GoogleCalendar():
         except HttpError as error:
             print(f"An error occurred: {error}")
 
-    def updateAgendamento(self):
+    def updateAgendamento(self, eventId:str, evento_atualizado:Agendamento):
         try: 
-            event = self.service.events().get(calendarId='primary', eventId='eventId').execute()
+            self.auth_api()
+            event = self.service.events().get(calendarId='sixdevsfatec@gmail.com', eventId=eventId).execute()
 
-            event['summary'] = 'Appointment at Somewhere'
+            event['summary'] = evento_atualizado.nome
+            event['description'] = evento_atualizado.descricao
+            #event['datetime']
 
-            self.service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
-            print("Update feito")
+            self.service.events().update(calendarId='primary', eventId=event['id'], body=evento_atualizado).execute()
+            print("Update feito ", evento_atualizado)
         except HttpError as error:
             print(f"An error occurred: {error}")
 

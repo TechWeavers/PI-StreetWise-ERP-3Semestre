@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 #from Controllers.Controller_Agenda import AgendaController
 from GoogleCalendarAPI.GoogleCalendar import GoogleCalendar
 from models.agendamentoModel import Agendamento
-
+from Controllers.Controller_Agenda import Controller_Copia_Agendamento
 
 app = FastAPI()
 agendaAPI = APIRouter()
@@ -23,14 +23,15 @@ async def createAgendamento(evento:Agendamento): #agenda_data: dict,Authorizatio
     controller = GoogleCalendar()
     return controller.insert_event(evento)
 
-"""@agendaAPI.get("/listar-agendamentos", tags=["agendamentos"])
-async def listarMateriais(Authorization: Annotated[Header, Depends(validar_token)]):
-     return AgendaController.getAllAgenda()
+@agendaAPI.get("/listar-agendamentos", tags=["agendamentos"])
+async def listarAgendamentos():#Authorization: Annotated[Header, Depends(validar_token)]
+     return Controller_Copia_Agendamento.getAllAgendamentos()
 
-#@agendaAPI.patch("/atualizar-agendamento/{agendaid}", tags=["agendamentos"]) 
-#async def atualizarCliente(agenda_data: agenda, nome:str ,Authorization: Annotated[Header, Depends(validar_token)]):
-     #return AgendaController.updateAgenda(dict(agenda_data), nome)
-"""
+@agendaAPI.put("/atualizar-agendamento/{eventoId}", tags=["agendamentos"]) 
+async def atualizarCliente(eventoId: str, evento:Agendamento ):#,Authorization: Annotated[Header, Depends(validar_token)]
+     controller = GoogleCalendar()
+     return controller.updateAgendamento(eventoId,dict(evento))
+
 @agendaAPI.delete("/deletar-agendamento/{event_ID}", tags=["agendamentos"])
 async def excluirMaterial(event_ID:str):#, Authorization: Annotated[Header, Depends(validar_token)]
      controller = GoogleCalendar()
