@@ -28,12 +28,12 @@ async def listarAgendamentos():#Authorization: Annotated[Header, Depends(validar
      return Controller_Copia_Agendamento.getAllAgendamentos()
 
 @agendaAPI.put("/atualizar-agendamento/{eventoId}", tags=["agendamentos"]) 
-async def atualizarCliente(eventoId: str, evento:Agendamento ):#,Authorization: Annotated[Header, Depends(validar_token)]
+async def atualizarAgendamento(eventoId: str, evento:Agendamento ):#,Authorization: Annotated[Header, Depends(validar_token)]
      controller = GoogleCalendar()
-     return controller.updateAgendamento(eventoId,dict(evento))
+     return controller.updateAgendamento(eventoId,evento)
 
 @agendaAPI.delete("/deletar-agendamento/{event_ID}", tags=["agendamentos"])
-async def excluirMaterial(event_ID:str):#, Authorization: Annotated[Header, Depends(validar_token)]
+async def excluirAgendamento(event_ID:str):#, Authorization: Annotated[Header, Depends(validar_token)]
      controller = GoogleCalendar()
      return controller.deleteAgenda(event_ID)
 

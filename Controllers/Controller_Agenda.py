@@ -18,13 +18,13 @@ class Controller_Copia_Agendamento():
   def __init__(self):
     pass
 
-  def inserir_agendamento(self,agendamento:dict): # este método é chamado de forma automática dentro do arquivo de controle da API, para criar uma cópia do agendamento
+  def inserir_agendamento(self,agendamento:dict): # este método é chamado de forma automática dentro do arquivo de controle da API, para criar uma cópia do agendamento  
     try:
        collection.insert_one(dict(agendamento)) 
     except Exception as ex:
        return{"erro": str({ex})}
 
-  @staticmethod
+  
   def getAllAgendamentos():
         try:
           agendamentos = [copias for copias in collection.find({})]  
@@ -34,3 +34,41 @@ class Controller_Copia_Agendamento():
           return agendamentos
         except Exception as ex:
           return {"error": str({ex})}
+        
+  def deletarAgendamentos(self,eventId:str):
+        try:
+         query  = {"id":eventId}
+         if not query:
+            raise Exceptions("erro ao encontrar agendamento para deletar")
+         result = collection.delete_one(query)
+         if result:
+               return {"message": " agendamento deletado com sucesso"}
+        except Exception as ex:
+          return {"error": str({ex})}
+
+  def updateAgendamento(self,agendamento_data: Agendamento, eventId:str): 
+        try:
+            query = {"id": eventId}
+            dadosAtualizados = self.editarDados(agendamento_data)
+
+            new_values = {"$set": dadosAtualizados}
+            print(new_values)
+            result = collection.update_one(query, new_values)
+            print(result)
+
+            if result:
+                return {"message": "agendamento atualizado com sucesso"}
+            else:
+                raise Exceptions("erro ao atualizar agendamento")
+        except Exception:
+            raise Exceptions("erro ao atualizar agendamento")
+        
+  @staticmethod
+  def editarDados(agendamento_data:Agendamento):
+      campos = ["nome", "descricao", "data", "hora_inicio","hora_fim","email_convidado"]
+
+      camposAtualizados = {}
+      for campo in campos:
+        if campo in agendamento_data and (agendamento_data[campo] is not None and agendamento_data[campo] != ""):
+            camposAtualizados[campo] = agendamento_data[campo]
+      return camposAtualizados

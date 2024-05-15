@@ -9,6 +9,7 @@ from googleapiclient.errors import HttpError
 from fastapi import HTTPException
 from models.agendamentoModel import Agendamento
 from Controllers.Controller_Agenda import Controller_Copia_Agendamento
+from datetime import datetime
 
 # testando formatações de datas
 data_atual = "15/05/2024"
@@ -139,9 +140,12 @@ class GoogleCalendar():
         try:
             self.auth_api()
             self.service.events().delete(calendarId='sixdevsfatec@gmail.com', eventId=event_ID).execute()
+            controller = Controller_Copia_Agendamento()
+            controller.deletarAgendamentos(event_ID)
         except HttpError as error:
             print(f"An error occurred: {error}")
 
+    
     def updateAgendamento(self, eventId:str, evento_atualizado:Agendamento):
         try: 
             self.auth_api()
@@ -149,11 +153,16 @@ class GoogleCalendar():
 
             event['summary'] = evento_atualizado.nome
             event['description'] = evento_atualizado.descricao
-            #event['datetime']
 
-            self.service.events().update(calendarId='primary', eventId=event['id'], body=evento_atualizado).execute()
+            # Converter a data e hora para o formato esperado
+            data_formatada = datetime.strptime(evento_atualizado.data, '%d/%m/%Y').strftime('%Y-%m-%d')
+            event['start']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_inicio}:00"
+            event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
+
+            event['attendees'][0]['email'] = evento_atualizado.email_convidado
+            print(event)
+
+            self.service.events().update(calendarId='sixdevsfatec@gmail.com', eventId=eventId, body=event).execute()
             print("Update feito ", evento_atualizado)
         except HttpError as error:
             print(f"An error occurred: {error}")
-
-
