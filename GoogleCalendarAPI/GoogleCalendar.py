@@ -6,9 +6,10 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from fastapi import HTTPException
+from fastapi import HTTPException,status
 from models.agendamentoModel import Agendamento
 from Controllers.Controller_Agenda import Controller_Copia_Agendamento
+from Controllers.Controller_Cliente import ControllerCliente
 from datetime import datetime
 
 # testando formatações de datas
@@ -93,36 +94,21 @@ class GoogleCalendar():
         except Exception as erro:
            return {"erro aq chefia":str({erro})}
         
-        created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
-        print('Event created:', created_event.get('htmlLink'))
-        copia_agendamento = event.copy()
-        copia_agendamento["id"] = created_event['id']
-        controller_agendamento = Controller_Copia_Agendamento()
-        controller_agendamento.inserir_agendamento(copia_agendamento)
-        
-        
+        try:
+          if ControllerCliente.getClienteAgendamento(email_convidado):
+            print("achou o cliente")
+            created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
+            print('Event created:', created_event.get('htmlLink'))
+            copia_agendamento = event.copy()
+            copia_agendamento["id"] = created_event['id']
+            controller_agendamento = Controller_Copia_Agendamento()
+            controller_agendamento.inserir_agendamento(copia_agendamento)
+          else:
+             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="cliente não encontrado nos registros do sistema")
+        except HTTPException as ex:
+           raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="cliente não encontrado nos registros do sistema")
+          
 
-        """now = datetime.datetime.now().isoformat() + "Z"
-        print("Getting the upcoming 10 events")
-        events_result = (
-            self.service.events()
-            .list(
-                calendarId="primary",
-                timeMin=now,
-                maxResults=10,
-                singleEvents=True,
-                orderBy="startTime",
-            )
-            .execute()
-        )
-        events = events_result.get("items", [])
-
-        if not events:
-            print("No upcoming events found.")
-        
-        for event in events:
-            start = event["start"].get("dateTime", event["start"].get("date"))
-            print(start, event["summary"])"""
         
     def formatar_data(self,data:str):
        #data_atual = "15/05/2024"

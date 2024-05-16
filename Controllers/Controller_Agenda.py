@@ -4,6 +4,7 @@ from configs.db import create_mongodb_connection
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
 from datetime import datetime
+from Controllers.Controller_Cliente import ControllerCliente
 
 
 # Configurações de conexão com o MongoDB
@@ -20,9 +21,9 @@ class Controller_Copia_Agendamento():
 
   def inserir_agendamento(self,agendamento:dict): 
     try:
-       collection.insert_one(dict(agendamento)) 
-    except Exception as ex:
-       return{"erro": str({ex})}
+         collection.insert_one(dict(agendamento)) 
+    except HTTPException:
+       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="cliente não encontrado nos registros do sistema")
 
   
   def getAllAgendamentos():

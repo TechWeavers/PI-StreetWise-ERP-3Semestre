@@ -64,6 +64,23 @@ class ControllerCliente:
          raise Exceptions.erro_manipular_cliente()
         
     @staticmethod
+    def getClienteAgendamento(email):
+        try:
+            clientes = collection.find({"email": email})
+            print(clientes)
+            if not clientes:
+               raise Exceptions.erro_manipular_cliente()
+            
+            found_clientes = []
+            for cli in clientes:
+                # Convert ObjectId to string if needed
+                cli["_id"] = str(cli["_id"])
+                found_clientes.append(cli)
+            return found_clientes
+        except Exception:
+         raise Exceptions.erro_manipular_cliente()
+        
+    @staticmethod
     def editCliente(cpf):
       try:
         cliente  = collection.find({"cpf":cpf})
