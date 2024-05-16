@@ -54,7 +54,7 @@ class GoogleCalendar():
     def insert_event(self, evento:Agendamento):
         nome = evento.nome
         descricao  = evento.descricao
-        data= self.formatar_data(evento.data)
+        data= evento.data
         hora_inicio = evento.hora_inicio+":00"
         hora_fim = evento.hora_fim+":00"
         email_convidado = evento.email_convidado
