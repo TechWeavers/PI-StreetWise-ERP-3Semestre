@@ -35,6 +35,22 @@ class Controller_Copia_Agendamento():
         except Exception as ex:
           return {"error": str({ex})}
         
+  def getAgendamento(agendamentoId:str):
+        try:
+            agendamentos = collection.find({"id": agendamentoId})
+            print(agendamentos)
+            if not agendamentos:
+               raise Exceptions("Erro ao buscar agendamento")
+            
+            found_agendamentos = []
+            for evento in agendamentos:
+                # Convert ObjectId to string if needed
+                evento["_id"] = str(evento["_id"])
+                found_agendamentos.append(evento)
+            return found_agendamentos
+        except Exception:
+         raise Exceptions("Erro ao buscar agendamento")
+        
   def deletarAgendamentos(self,eventId:str):
         try:
          query  = {"id":eventId}

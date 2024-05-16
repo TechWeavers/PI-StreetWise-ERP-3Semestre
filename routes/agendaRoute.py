@@ -2,7 +2,6 @@ from fastapi import APIRouter, FastAPI, Depends,Header
 from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
-#from Controllers.Controller_Agenda import AgendaController
 from GoogleCalendarAPI.GoogleCalendar import GoogleCalendar
 from models.agendamentoModel import Agendamento
 from Controllers.Controller_Agenda import Controller_Copia_Agendamento
@@ -19,21 +18,27 @@ app.add_middleware(
 )
 
 @agendaAPI.post("/novo-agendamento", tags=["agendamentos"])
-async def createAgendamento(evento:Agendamento): #agenda_data: dict,Authorization: Annotated[Header, Depends
+async def createAgendamento(evento:Agendamento,Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
     return controller.insert_event(evento)
 
 @agendaAPI.get("/listar-agendamentos", tags=["agendamentos"])
-async def listarAgendamentos():#Authorization: Annotated[Header, Depends(validar_token)]
+async def listarAgendamentos(Authorization: Annotated[Header, Depends(validar_token)]):#
      return Controller_Copia_Agendamento.getAllAgendamentos()
 
+@agendaAPI.get("/buscar-agendamento/{agendamentoId}", tags=["agendamentos"])
+async def buscarAgendamento(agendamentoId:str, Authorization: Annotated[Header, Depends(validar_token)]):
+    controller = Controller_Copia_Agendamento()
+    return controller.getAgendamento(agendamentoId)
+
+
 @agendaAPI.put("/atualizar-agendamento/{eventoId}", tags=["agendamentos"]) 
-async def atualizarAgendamento(eventoId: str, evento:Agendamento ):#,Authorization: Annotated[Header, Depends(validar_token)]
+async def atualizarAgendamento(eventoId: str, evento:Agendamento,Authorization: Annotated[Header,Depends(validar_token)]):#,
      controller = GoogleCalendar()
      return controller.updateAgendamento(eventoId,evento)
 
 @agendaAPI.delete("/deletar-agendamento/{event_ID}", tags=["agendamentos"])
-async def excluirAgendamento(event_ID:str):#, Authorization: Annotated[Header, Depends(validar_token)]
+async def excluirAgendamento(event_ID:str, Authorization: Annotated[Header, Depends(validar_token)]):#, 
      controller = GoogleCalendar()
      return controller.deleteAgenda(event_ID)
 
