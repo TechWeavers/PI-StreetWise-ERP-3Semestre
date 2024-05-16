@@ -148,25 +148,25 @@ class GoogleCalendar():
     
     def updateAgendamento(self, eventId:str, evento_atualizado:Agendamento):
         try: 
-            self.auth_api()
-            event = self.service.events().get(calendarId='sixdevsfatec@gmail.com', eventId=eventId).execute()
+          self.auth_api()
+          event = self.service.events().get(calendarId='sixdevsfatec@gmail.com', eventId=eventId).execute()
 
-            event['summary'] = evento_atualizado.nome
-            event['description'] = evento_atualizado.descricao
+          event['summary'] = evento_atualizado.nome
+          event['description'] = evento_atualizado.descricao
 
-            # Converter a data e hora para o formato esperado
-            data_formatada = datetime.strptime(evento_atualizado.data, '%d/%m/%Y').strftime('%Y-%m-%d')
-            event['start']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_inicio}:00"
-            event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
+          # Converter a data e hora para o formato esperado
+          data_formatada = datetime.strptime(evento_atualizado.data, '%Y-%m-%d').strftime('%Y-%m-%d')
+          event['start']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_inicio}:00"
+          event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
 
-            event['attendees'][0]['email'] = evento_atualizado.email_convidado
-            print(event)
+          event['attendees'][0]['email'] = evento_atualizado.email_convidado
+          print(event)
 
-            self.service.events().update(calendarId='sixdevsfatec@gmail.com', eventId=eventId, body=event).execute()
-            print("Update feito ", evento_atualizado)
+          self.service.events().update(calendarId='sixdevsfatec@gmail.com', eventId=eventId, body=event).execute()
+          print("Update feito ", evento_atualizado)
 
-            controller_copias = Controller_Copia_Agendamento()
-            controller_copias.updateAgendamento(evento_atualizado, eventId)
+          controller_copias = Controller_Copia_Agendamento()
+          controller_copias.updateAgendamento(evento_atualizado, eventId)
             
         except HttpError as error:
             print(f"An error occurred: {error}")

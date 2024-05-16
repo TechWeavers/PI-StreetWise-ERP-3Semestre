@@ -69,7 +69,7 @@ class Controller_Copia_Agendamento():
             #dadosAtualizados = self.editarDados(agendamento_data)
             #print(dadosAtualizados)
 
-            campos = ["id","nome", "descricao", "data", "hora_inicio","hora_fim","email_convidado"]
+            campos = ["summary", "description", "data", "start.dateTime","end.dateT","attendees[0].email"]
             camposAtualizados = {}
             for campo in campos:
               if campo in agendamento_data and (agendamento_data[campo] is not None and agendamento_data[campo] != ""):

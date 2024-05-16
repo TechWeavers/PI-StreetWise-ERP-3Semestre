@@ -21,6 +21,8 @@ app.add_middleware(
 
 @app.get("/validar-token", tags=["login"])
 async def validar_token(Authorization: Header= Depends(oauth2_scheme) ):
+    
+    print(Authorization)
     return LoginController.retornar_token(Authorization)
     
 @app.get("/validar-token-admin", tags=["login"])

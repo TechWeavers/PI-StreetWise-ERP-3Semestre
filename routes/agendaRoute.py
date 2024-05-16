@@ -27,12 +27,11 @@ async def listarAgendamentos(Authorization: Annotated[Header, Depends(validar_to
      return Controller_Copia_Agendamento.getAllAgendamentos()
 
 @agendaAPI.get("/buscar-agendamento/{agendamentoId}", tags=["agendamentos"])
-async def buscarAgendamento(agendamentoId:str, Authorization: Annotated[Header, Depends(validar_token)]):
-    controller = Controller_Copia_Agendamento()
-    return controller.getAgendamento(agendamentoId)
+async def buscarAgendamento(agendamentoId:str,Authorization: Annotated[Header,Depends(validar_token)]):
+    return Controller_Copia_Agendamento.getAgendamento(agendamentoId)
 
 
-@agendaAPI.put("/atualizar-agendamento/{eventoId}", tags=["agendamentos"]) 
+@agendaAPI.patch("/atualizar-agendamento/{eventoId}", tags=["agendamentos"]) 
 async def atualizarAgendamento(eventoId: str, evento:Agendamento,Authorization: Annotated[Header,Depends(validar_token)]):#,
      controller = GoogleCalendar()
      return controller.updateAgendamento(eventoId,evento)
