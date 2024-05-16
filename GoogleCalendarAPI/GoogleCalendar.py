@@ -26,7 +26,7 @@ class GoogleCalendar():
     def __init__(self):
       self.creds = None
       self.SCOPES = ["https://www.googleapis.com/auth/calendar.events"]#.readonly
-      self.token_path = "C:\\Users\\jpkun\\OneDrive\\Documentos\\3 SEMESTRE - FATEC\\PI-StreetWise-ERP-3Semestre\\GoogleCalendarAPI\\token.json"
+      self.token_path = "././token.json"
       
 
     
