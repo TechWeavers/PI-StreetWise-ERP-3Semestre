@@ -3,6 +3,7 @@ from models.agendamentoModel import Agendamento
 from configs.db import create_mongodb_connection
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
+from datetime import datetime
 
 
 # Configurações de conexão com o MongoDB
@@ -12,13 +13,12 @@ collection_name = "agendamentos"
 
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
-collection = db[collection_name] #todas as operações de usuarios podem usar essa collection
-
+collection = db[collection_name] 
 class Controller_Copia_Agendamento():
   def __init__(self):
     pass
 
-  def inserir_agendamento(self,agendamento:dict): # este método é chamado de forma automática dentro do arquivo de controle da API, para criar uma cópia do agendamento  
+  def inserir_agendamento(self,agendamento:dict): 
     try:
        collection.insert_one(dict(agendamento)) 
     except Exception as ex:
@@ -62,21 +62,12 @@ class Controller_Copia_Agendamento():
         except Exception as ex:
           return {"error": str({ex})}
 
-  def updateAgendamento(self,agendamento_data: Agendamento, eventId:str): 
+  def updateAgendamento(self,event:dict, eventId:str): 
         try:
             query = {"id": eventId}
             print(query)
-            #dadosAtualizados = self.editarDados(agendamento_data)
-            #print(dadosAtualizados)
-
-            campos = ["summary", "description", "data", "start.dateTime","end.dateT","attendees[0].email"]
-            camposAtualizados = {}
-            for campo in campos:
-              if campo in agendamento_data and (agendamento_data[campo] is not None and agendamento_data[campo] != ""):
-                camposAtualizados[campo] = agendamento_data[campo]
-
-            print(camposAtualizados)
-            new_values = {"$set": camposAtualizados}
+            print(event)
+            new_values = {"$set": event}
             print(new_values)
             result = collection.update_one(query, new_values)
             print(result)
@@ -84,9 +75,9 @@ class Controller_Copia_Agendamento():
             if result:
                 return {"message": "agendamento atualizado com sucesso"}
             else:
-                raise Exceptions("erro ao atualizar agendamento")
+                raise Exception("erro ao atualizar agendamento")
         except Exception:
-            raise Exceptions("erro ao atualizar agendamento")
+            raise Exception("erro ao atualizar agendamento")
         
   @staticmethod
   def editarDados(agendamento_data:Agendamento):

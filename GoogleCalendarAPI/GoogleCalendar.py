@@ -150,6 +150,7 @@ class GoogleCalendar():
         try: 
           self.auth_api()
           event = self.service.events().get(calendarId='sixdevsfatec@gmail.com', eventId=eventId).execute()
+          print(type(event))
 
           event['summary'] = evento_atualizado.nome
           event['description'] = evento_atualizado.descricao
@@ -166,7 +167,7 @@ class GoogleCalendar():
           print("Update feito ", evento_atualizado)
 
           controller_copias = Controller_Copia_Agendamento()
-          controller_copias.updateAgendamento(evento_atualizado, eventId)
+          controller_copias.updateAgendamento(event, eventId)
             
         except HttpError as error:
             print(f"An error occurred: {error}")
