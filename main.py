@@ -6,6 +6,8 @@ services = [
     {"file": "routes.userRoute", "port": 8001},
     {"file": "routes.redefinicaoRoute", "port": 8002},
     {"file": "routes.clienteRoute", "port": 8003},
+    {"file": "routes.materialRoute", "port": 8004},
+    {"file": "routes.agendaRoute", "port": 8005}
     # Adicione mais serviços conforme necessário
 ]
 
