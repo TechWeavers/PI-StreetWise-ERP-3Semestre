@@ -3,6 +3,7 @@ from configs.db import create_mongodb_connection
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
 import datetime
+from typing import List
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
@@ -78,12 +79,6 @@ class ControllerMaterial:
   def updateMaterial(self, material: dict, nome:str): 
         try:
             query = {"nome":nome}
-            """campos = ["nome", "cpf", "telefone", "email","idade"]
-
-            camposAtualizados = {}
-            for campo in campos:
-                if campo in cliente_data and (cliente_data[campo] is not None and cliente_data[campo] != ""):
-                    camposAtualizados[campo] = cliente_data[campo]"""
             dadosAtualizados = self.editarDados(material)
 
             new_values = {"$set": dadosAtualizados}
@@ -125,3 +120,40 @@ class ControllerMaterial:
             raise Exceptions.erro_manipular_material()
     except Exception:
       raise Exceptions.erro_manipular_material()
+
+  @staticmethod
+  def getMaterialConsumo(): # retorna a lista de materiais disponiveis com nome e quantidade
+    try:
+        materiais = collection.find({})
+
+        materiais_dados_consumo = []
+        for mat in materiais:
+          materiais_dados_consumo.append({"nome":mat["nome"], "quantidade":mat["quantidade"]})
+
+        return materiais_dados_consumo
+
+    except:
+     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao buscar materiais para utilização")
+    
+
+  @staticmethod
+  def consumirMateriais(materiais:List[Material]): # atualiza quantidade e data de atualização do material
+    data_atual = datetime.datetime.now().strftime('%d/%m/%Y')
+    try:
+       for mat in materiais:
+        nome = mat.nome
+        quantidade_consumida = mat.quantidade
+        material_cursor = collection.find_one({"nome":nome})
+
+        quantidade_atual = material_cursor["quantidade"]
+        quantidade_restante = quantidade_atual - quantidade_consumida
+        
+        query = {"nome":nome}
+        new_value = {"$set": {"quantidade":quantidade_restante,"data_atualizacao":data_atual}}
+        result = collection.update_one(query, new_value)
+        print(result)
+
+       return status.HTTP_200_OK
+
+    except:
+      raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="erro ao utilizar materiais")
