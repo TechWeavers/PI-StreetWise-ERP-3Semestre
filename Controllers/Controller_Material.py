@@ -141,19 +141,39 @@ class ControllerMaterial:
     data_atual = datetime.datetime.now().strftime('%d/%m/%Y')
     try:
        for mat in materiais:
-        nome = mat.nome
-        quantidade_consumida = mat.quantidade
-        material_cursor = collection.find_one({"nome":nome})
+          nome = mat.nome
+          quantidade_consumida = mat.quantidade
+          material_cursor = collection.find_one({"nome":nome})
 
-        quantidade_atual = material_cursor["quantidade"]
-        quantidade_restante = quantidade_atual - quantidade_consumida
-        
-        query = {"nome":nome}
-        new_value = {"$set": {"quantidade":quantidade_restante,"data_atualizacao":data_atual}}
-        result = collection.update_one(query, new_value)
-        print(result)
+          quantidade_atual = material_cursor["quantidade"]
+          quantidade_restante = quantidade_atual - quantidade_consumida
+
+          if quantidade_restante<0:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="A quantidade restante do material não pode ser inferior a 0")
+          
+          query = {"nome":nome}
+          new_value = {"$set": {"quantidade":quantidade_restante,"data_atualizacao":data_atual}}
+          result = collection.update_one(query, new_value)
+          print(result)
 
        return status.HTTP_200_OK
 
     except:
       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="erro ao utilizar materiais")
+
+  @staticmethod
+  def CalcularMateriaisFaltantes():
+     try:
+      materiais_faltantes = []
+      materiais = collection.find({})
+      materiais = list(materiais)
+      for mat in materiais:
+          if mat["quantidade"]<5:
+            materiais_faltantes.append(str({"nome":mat["nome"], "quantidade":mat["quantidade"]}))
+      
+      if materiais_faltantes:
+        return materiais_faltantes
+      else:
+          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Não foram encontrados materiais em falta.")
+     except:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Não foram encontrados materiais em falta.")

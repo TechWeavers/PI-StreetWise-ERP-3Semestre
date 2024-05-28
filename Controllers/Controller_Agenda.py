@@ -5,6 +5,7 @@ from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
 from datetime import datetime
 from Controllers.Controller_Cliente import ControllerCliente
+import datetime
 
 
 # Configurações de conexão com o MongoDB
@@ -90,3 +91,10 @@ class Controller_Copia_Agendamento():
         if campo in agendamento_data and (agendamento_data[campo] is not None and agendamento_data[campo] != ""):
           camposAtualizados[campo] = agendamento_data[campo]
       return camposAtualizados
+  
+  @staticmethod
+  def calcularProximosAgendamentos():
+     data_atual = datetime.datetime.now()
+     agendamentos = collection.find({"start.dateTime": {"$gt": data_atual
+  }}).limit(7)
+     print(agendamentos)
