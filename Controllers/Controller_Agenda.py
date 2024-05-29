@@ -3,7 +3,8 @@ from models.agendamentoModel import Agendamento
 from configs.db import create_mongodb_connection
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
-from datetime import datetime
+from datetime import datetime, timezone
+from dateutil import parser
 from Controllers.Controller_Cliente import ControllerCliente
 import datetime
 
@@ -95,6 +96,17 @@ class Controller_Copia_Agendamento():
   @staticmethod
   def calcularProximosAgendamentos():
      data_atual = datetime.datetime.now()
-     agendamentos = collection.find({"start.dateTime": {"$gt": data_atual
-  }}).limit(7)
-     print(agendamentos)
+     future_events = []
+     agendamentos = collection.find({})
+     
+     for event in agendamentos:
+          event["_id"] = str(event["_id"])
+          start_time_str = event['start']['dateTime']
+          start_time = parser.isoparse(start_time_str)
+
+          if start_time > data_atual:
+            future_events.append({"nome":event["summary"], "descrição":event["summary"]})
+
+     return future_events
+    
+     
