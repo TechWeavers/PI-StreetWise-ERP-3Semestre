@@ -25,4 +25,8 @@ async def buscarMateriaisFaltantes():
 async def buscarProximosagendamentos():
   return Controller_Copia_Agendamento.calcularProximosAgendamentos()
 
+@relatorioAPI.get("/quantidade-agendamentos", tags=["relatorios"])
+async def buscarProximosagendamentos():
+  return Controller_Copia_Agendamento.calcularQuantidadeAgendamentosnoMes()
+
 app.include_router(relatorioAPI)

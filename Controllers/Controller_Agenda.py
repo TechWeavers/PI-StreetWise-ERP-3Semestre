@@ -3,7 +3,7 @@ from models.agendamentoModel import Agendamento
 from configs.db import create_mongodb_connection
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
-from datetime import datetime, timezone
+from datetime import datetime, timezone,timedelta
 from dateutil import parser
 from Controllers.Controller_Cliente import ControllerCliente
 import datetime
@@ -17,13 +17,17 @@ collection_name = "agendamentos"
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
 collection = db[collection_name] 
+
 class Controller_Copia_Agendamento():
+
+  quantidade_agendamentos = 0
   def __init__(self):
     pass
 
   def inserir_agendamento(self,agendamento:dict): 
     try:
          collection.insert_one(dict(agendamento)) 
+         self.quantidade_agendamentos+=1
     except HTTPException:
        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="cliente não encontrado nos registros do sistema")
 
@@ -99,14 +103,50 @@ class Controller_Copia_Agendamento():
      future_events = []
      agendamentos = collection.find({})
      
+     contador = 0
      for event in agendamentos:
+         
           event["_id"] = str(event["_id"])
           start_time_str = event['start']['dateTime']
           start_time = parser.isoparse(start_time_str)
 
-          if start_time > data_atual:
-            future_events.append({"nome":event["summary"], "descrição":event["summary"]})
+          if start_time > data_atual and contador<=6:
+            future_events.append({"nome":event["summary"], "descrição":event["description"]})
+            contador+=1
 
      return future_events
+  
+  
+  def calcularQuantidadeAgendamentosnoMes():
+
+    # Obtendo a data atual
+    data_atual = datetime.datetime.now()
+
+    # Calculando o último dia do mês atual
+    ultimo_dia_mes_atual = data_atual.replace(day=1, month=data_atual.month+1, hour=0, minute=0, second=0) - timedelta(days=1)
+    print(ultimo_dia_mes_atual)
+    # Pipeline de agregação para contar documentos com datas menores ou iguais ao último dia do mês atual
+    pipeline = [
+        {
+            "$match": {
+                "start.dateTime": {"$lte": ultimo_dia_mes_atual}
+            }
+        },
+        {
+            "$count": "total"
+        }
+    ]
+
+    print(list(collection.aggregate(pipeline)))
+
+    # Executando a agregação
+    resultado = list(collection.aggregate(pipeline))
+
+    # Extraindo o total de documentos
+    total_documentos = resultado[0]['total'] if resultado else 0
+
+    
+    return collection.aggregate(pipeline)
+     
     
      
