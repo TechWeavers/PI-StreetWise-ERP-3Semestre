@@ -142,11 +142,15 @@ class Controller_Copia_Agendamento():
     # Executando a agregação
     resultado = list(collection.aggregate(pipeline))
 
+    filtro = {"start.dateTime": {"$lte": ultimo_dia_mes_atual}}
+    total_documentos = collection.count_documents(filtro)
+
+
     # Extraindo o total de documentos
-    total_documentos = resultado[0]['total'] if resultado else 0
+    #total_documentos = resultado[0]['total'] if resultado else 0
 
     
-    return collection.aggregate(pipeline)
+    return total_documentos
      
     
      
