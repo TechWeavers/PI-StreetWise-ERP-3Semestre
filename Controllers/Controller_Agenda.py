@@ -117,40 +117,43 @@ class Controller_Copia_Agendamento():
      return future_events
   
   
-  def calcularQuantidadeAgendamentosnoMes():
+  def calcularQuantidadeAgendamentosnoMes(self):
 
-    # Obtendo a data atual
+    primeiro_dia_mes_atual  = self.obterPrimeiroDiadoMes()
+    ultimo_dia_mes_atual  = self.obterUltimoDiadoMes()
+
+    try:
+      filtro = {"start.dateTime": {"$lte": ultimo_dia_mes_atual,"$gte":primeiro_dia_mes_atual}}
+      total_documentos = collection.count_documents(filtro)
+      
+      return total_documentos
+    except:
+       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Não foi possível obter a quantidade de agendamentos no mês")
+  
+  @staticmethod
+  def obterPrimeiroDiadoMes():
     data_atual = datetime.datetime.now()
 
-    # Calculando o último dia do mês atual
+    primeiro_dia_mes_atual = data_atual.replace(day=1, month=data_atual.month, hour=0, minute=0, second=0) 
+
+    primeiro_dia_mes_atual = str(primeiro_dia_mes_atual)  
+    primeiro_dia_mes_atual = primeiro_dia_mes_atual[:-7]
+    print(primeiro_dia_mes_atual)
+   
+    return primeiro_dia_mes_atual
+  
+  @staticmethod
+  def obterUltimoDiadoMes():
+    data_atual = datetime.datetime.now()
+
     ultimo_dia_mes_atual = data_atual.replace(day=1, month=data_atual.month+1, hour=0, minute=0, second=0) - timedelta(days=1)
+
+    ultimo_dia_mes_atual = str(ultimo_dia_mes_atual)
+    ultimo_dia_mes_atual = ultimo_dia_mes_atual[:-7]
     print(ultimo_dia_mes_atual)
-    # Pipeline de agregação para contar documentos com datas menores ou iguais ao último dia do mês atual
-    pipeline = [
-        {
-            "$match": {
-                "start.dateTime": {"$lte": ultimo_dia_mes_atual}
-            }
-        },
-        {
-            "$count": "total"
-        }
-    ]
-
-    print(list(collection.aggregate(pipeline)))
-
-    # Executando a agregação
-    resultado = list(collection.aggregate(pipeline))
-
-    filtro = {"start.dateTime": {"$lte": ultimo_dia_mes_atual}}
-    total_documentos = collection.count_documents(filtro)
-
-
-    # Extraindo o total de documentos
-    #total_documentos = resultado[0]['total'] if resultado else 0
-
     
-    return total_documentos
+    return ultimo_dia_mes_atual
+     
      
     
      
