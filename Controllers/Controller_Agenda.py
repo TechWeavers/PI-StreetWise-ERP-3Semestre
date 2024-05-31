@@ -172,7 +172,7 @@ class Controller_Copia_Agendamento():
 
       valor_bruto_agendamentos = 0
       for event in agendamentos_no_mes:
-        valor_bruto_agendamentos = event["preco"]
+        valor_bruto_agendamentos += event["preco"]
 
       return valor_bruto_agendamentos
     
