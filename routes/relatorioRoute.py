@@ -18,16 +18,26 @@ app.add_middleware(
 )
 
 @relatorioAPI.get("/materiais-faltantes", tags=["relatorios"])
-async def buscarMateriaisFaltantes():
+async def buscar_materiais_faltantes():
   return ControllerMaterial.CalcularMateriaisFaltantes()
 
 @relatorioAPI.get("/proximos-agendamentos", tags=["relatorios"])
-async def buscarProximosagendamentos():
+async def buscar_proximos_agendamentos():
   return Controller_Copia_Agendamento.calcularProximosAgendamentos()
 
 @relatorioAPI.get("/quantidade-agendamentos", tags=["relatorios"])
-async def buscarProximosagendamentos():
+async def buscar_quantidade_agendamentos_no_mes():
   controller = Controller_Copia_Agendamento()
   return controller.calcularQuantidadeAgendamentosnoMes()
+
+@relatorioAPI.get("/valorBruto-agendamentos", tags=["relatorios"])
+async def buscar_valor_bruto_agendamentos_no_mes():
+  controller = Controller_Copia_Agendamento()
+  return controller.valorAgendamentosNoMes()
+
+@relatorioAPI.get("/media-agendamentos", tags=["relatorios"])
+async def buscar_media_agendamentos_no_mes():
+  controller = Controller_Copia_Agendamento()
+  return controller.media_valor_agendamentos_no_mes()
 
 app.include_router(relatorioAPI)

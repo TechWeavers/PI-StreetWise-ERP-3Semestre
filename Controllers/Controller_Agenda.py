@@ -82,7 +82,7 @@ class Controller_Copia_Agendamento():
             if result:
                 return {"message": "agendamento atualizado com sucesso"}
             else:
-                raise Exception("erro ao atualizar agendamento")
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao atualizar agendamento. Verifique os dados e tente novamente")
         except Exception:
             raise Exception("erro ao atualizar agendamento")
         
@@ -114,7 +114,7 @@ class Controller_Copia_Agendamento():
             future_events.append({"nome":event["summary"], "descrição":event["description"]})
             contador+=1
 
-     return future_events
+     return future_events #retorna apenas os próximos 7 eventos
   
   
   def calcularQuantidadeAgendamentosnoMes(self):
@@ -153,7 +153,42 @@ class Controller_Copia_Agendamento():
     print(ultimo_dia_mes_atual)
     
     return ultimo_dia_mes_atual
+  
+ 
+  def valorAgendamentosNoMes(self):
      
+    primeiro_dia_mes_atual  = self.obterPrimeiroDiadoMes()
+    ultimo_dia_mes_atual  = self.obterUltimoDiadoMes()
+    filtro = {"start.dateTime": {"$lte": ultimo_dia_mes_atual,"$gte":primeiro_dia_mes_atual}}
+
+    agendamentos_no_mes = []
+
+    try:
+      agendamentos = collection.find(filtro)
+
+      for event in agendamentos:
+        event["_id"] = str(event["_id"])
+        agendamentos_no_mes.append(event)
+
+      valor_bruto_agendamentos = 0
+      for event in agendamentos_no_mes:
+        valor_bruto_agendamentos = event["preco"]
+
+      return valor_bruto_agendamentos
+    
+    except:
+       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao carregar valor dos agendamentos no mês")
+    
+
+  def media_valor_agendamentos_no_mes(self):
+     try:
+      valor_bruto = self.valorAgendamentosNoMes()
+      quantidade =self.calcularQuantidadeAgendamentosnoMes()
+      media = valor_bruto/quantidade
+      return media
+     except:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao carregar média do valor de agendamentos")
+    
      
     
      
