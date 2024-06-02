@@ -66,19 +66,20 @@ class ControllerCliente:
     @staticmethod
     def getClienteAgendamento(email):
         try:
-            clientes = collection.find({"email": email})
-            print(clientes)
-            if not clientes:
-               raise Exceptions.erro_manipular_cliente()
+            cliente = collection.find_one({"email": email})
+            print(email)
+            print(list(cliente))
+            if not cliente:
+               raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Cliente não encontrado nos registros do sistema")
             
-            found_clientes = []
-            for cli in clientes:
+            #found_clientes = []
+            #for cli in clientes:
                 # Convert ObjectId to string if needed
-                cli["_id"] = str(cli["_id"])
-                found_clientes.append(cli)
-            return found_clientes
+            cliente["_id"] = str(cliente["_id"])
+                #found_clientes.append(cli)
+            return cliente
         except Exception:
-         raise Exceptions.erro_manipular_cliente()
+         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Cliente não encontrado nos registros do sistema")
         
     @staticmethod
     def editCliente(cpf):

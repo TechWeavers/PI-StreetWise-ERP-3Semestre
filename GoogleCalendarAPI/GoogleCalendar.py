@@ -72,6 +72,7 @@ class GoogleCalendar:
                 },
             }
             print("chegou aqui")
+            
             if ControllerCliente.getClienteAgendamento(email_convidado):
                 created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
                 #print('Event created:', created_event.get('htmlLink'))
@@ -79,7 +80,7 @@ class GoogleCalendar:
                 copia_agendamento["id"] = created_event['id']
                 controller_agendamento = Controller_Copia_Agendamento()
                 controller_agendamento.inserir_agendamento(copia_agendamento)
-                return status.HTTP_201_CREATED
+                return 200
             else:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="cliente não encontrado nos registros do sistema")
 
@@ -89,12 +90,18 @@ class GoogleCalendar:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"erro ao criar evento: {str(erro)}")
 
     def formatar_data(self, data: str):
-        data_atual = data.split("/")
-        dia = data_atual[0]
-        mes = data_atual[1]
-        ano = data_atual[2]
-        data_format_final = f"{ano}-{mes}-{dia}"
-        return data_format_final
+        #try:
+            data_atual = data.split("-")
+            print(data_atual)
+            dia = data_atual[2]
+            mes = data_atual[1]
+            ano = data_atual[0]
+            data_format_final = f"{ano}-{mes}-{dia}"
+            
+            return data_format_final
+    
+        #except:
+            #raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Erro ao encontrar data para agendamento")
 
     def deleteAgenda(self, event_ID):
         try:
