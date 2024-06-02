@@ -119,12 +119,12 @@ class GoogleCalendar:
             event['summary'] = evento_atualizado.nome
             event['description'] = evento_atualizado.descricao
 
-            data_formatada = datetime.strptime(evento_atualizado.data, '%Y-%m-%d').strftime('%Y-%m-%d')
+            data_formatada = datetime.datetime.strptime(evento_atualizado.data, '%Y-%m-%d').strftime('%Y-%m-%d')
             event['start']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_inicio}:00"
             event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
             event['attendees'][0]['email'] = evento_atualizado.email_convidado
 
-            self.service.events().update(calendarId='primary', eventId=eventId, body=event).execute()
+            self.service.events().update(calendarId='sixdevsfatec@gmail.com', eventId=eventId, body=event).execute()
             controller_copias = Controller_Copia_Agendamento()
             controller_copias.updateAgendamento(event, eventId)
             
