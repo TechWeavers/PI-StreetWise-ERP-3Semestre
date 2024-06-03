@@ -111,7 +111,7 @@ class Controller_Copia_Agendamento():
           start_time = parser.isoparse(start_time_str)
 
           if start_time > data_atual and contador<=6:
-            future_events.append({"nome":event["summary"], "descrição":event["description"]})
+            future_events.append({"summary":event["summary"], "description":event["description"],"date":start_time_str })
             contador+=1
 
      return future_events #retorna apenas os próximos 7 eventos
