@@ -12,7 +12,7 @@ def enviar_email(): # Agendar o envio do e-mail todos os dias às 01:30 da madru
   agendamentos = controller.retornar_todos_agendamentos()
 
   for event in agendamentos:
-      if
+      return True
   schedule.every().day.at("01:30").do(email.email24Antes())
 
   
