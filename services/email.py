@@ -40,7 +40,9 @@ conf = ConnectionConfig(
 fm = FastMail(conf)
  
 html= ""
- 
+
+#Emails recuperação de senha
+
 async def emailEsqueceuSenha(user: User,token:str): #, token: str
     try:
         emailusuario = user["email"]
@@ -49,7 +51,7 @@ async def emailEsqueceuSenha(user: User,token:str): #, token: str
  
         html = """
             <h1>Olá, {username}</h1>
-            <p>Recebemos recentemente um pedido de recuperação de senha da sua conta cadastrada na InkHouse</p>
+            <p>Recebemos recentemente um pedido de recuperação de senha da sua conta cadastrada na InkDash</p>
             <br>
             <p>Se você não solicitou esse e-mail de redefinição de senha, não precisa se preocupar</p>
             <p>Basta ignorar esse e-mail</p>
@@ -59,11 +61,11 @@ async def emailEsqueceuSenha(user: User,token:str): #, token: str
             <br>
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
-            <p>Equipe da InkHouse</p>
+            <p>Equipe da InkDash</p>
         """.format(username=username, redefinirURL= redefinirURL)
  
         message = MessageSchema(
-            subject="Recuperação de Senha - InkHouse",
+            subject="Recuperação de Senha - InkDash",
             recipients=[emailusuario],
             body=html,
             subtype=MessageType.html
@@ -74,7 +76,7 @@ async def emailEsqueceuSenha(user: User,token:str): #, token: str
     except Exception as e:
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
- 
+
 async def senhaRedefinida(user: User):
     try:
         emailusuario = user["email"]
@@ -87,11 +89,11 @@ async def senhaRedefinida(user: User):
             <br>
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
-            <p>Equipe da InkHouse</p>
+            <p>Equipe da InkDash</p>
         """.format(username=user["name"])
  
         message = MessageSchema(
-            subject="A redefinição de senha foi um sucesso! - InkHouse",
+            subject="A redefinição de senha foi um sucesso! - InkDash",
             recipients=[emailusuario],
             body=html,
             subtype=MessageType.html
@@ -102,4 +104,109 @@ async def senhaRedefinida(user: User):
     except Exception as e:
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
- 
+
+
+#Emails procedimentos
+
+async def email24Antes(user: User):
+    try:
+        emailusuario = user["email"]
+        username = user["name"]
+        appointment_date = user["appointment_date"]  # Supondo que a data do agendamento está disponível no usuário
+        
+        html = """
+            <h1>Olá, {username}</h1>
+            <p>Este é um lembrete do seu agendamento de tatuagem na InkDash.</p>
+            <br>
+            <p>Data do Agendamento: {appointment_date}</p>
+            <br>
+            <p>Estamos ansiosos para vê-lo!</p>
+            <p>Se você tiver alguma dúvida ou precisar reagendar, por favor entre em contato conosco.</p>
+            <br>
+            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+            <p>Atenciosamente,</p>
+            <p>Equipe da InkDash</p>
+        """.format(username=username, appointment_date=appointment_date)
+        
+        message = MessageSchema(
+            subject="Lembrete de Tatuagem Marcada - InkDash",
+            recipients=[emailusuario],
+            body=html,
+            subtype=MessageType.html
+        )
+        
+        # Envio do e-mail
+        await fm.send_message(message)
+    except Exception as e:
+        # Tratamento de exceções
+        print("Erro ao enviar e-mail:", e)
+
+async def email24Depois(user: User):
+    try:
+        emailusuario = user["email"]
+        username = user["name"]
+        
+        html = """
+            <h1>Olá, {username}</h1>
+            <p>Esperamos que você esteja satisfeito com sua nova tatuagem feita na InkDash!</p>
+            <br>
+            <p>Gostaríamos de saber se deu tudo certo com o procedimento. Caso tenha alguma dúvida ou preocupação, por favor, não hesite em nos contatar.</p>
+            <br>
+            <p>Aqui estão alguns cuidados importantes para garantir que sua tatuagem cicatrize bem:</p>
+            <ul>
+                <li>Mantenha a área tatuada limpa e hidratada.</li>
+                <li>Evite exposição direta ao sol.</li>
+                <li>Não submerja a tatuagem em água (banheiras, piscinas, etc.).</li>
+                <li>Evite coçar ou arrancar casquinhas que possam se formar.</li>
+            </ul>
+            <br>
+            <p>Estamos aqui para qualquer dúvida que você possa ter.</p>
+            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+            <p>Atenciosamente,</p>
+            <p>Equipe da InkDash</p>
+        """.format(username=username)
+        
+        message = MessageSchema(
+            subject="Confirmação e Cuidados Pós-Tatuagem - InkDash",
+            recipients=[emailusuario],
+            body=html,
+            subtype=MessageType.html
+        )
+        
+        # Envio do e-mail
+        await fm.send_message(message)
+    except Exception as e:
+        # Tratamento de exceções
+        print("Erro ao enviar e-mail:", e)
+
+async def emailRetorno(user: User):
+    try:
+        emailusuario = user["email"]
+        username = user["name"]
+        
+        html = """
+            <h1>Olá, {username}</h1>
+            <p>Esperamos que você esteja gostando da sua nova tatuagem feita na InkDash!</p>
+            <br>
+            <p>Como parte do nosso plano de cuidados, gostaríamos de lembrá-lo sobre a possibilidade de realizar ajustes na sua tatuagem, caso seja necessário.</p>
+            <p>É importante garantir que todos os detalhes estejam perfeitos e que a tatuagem esteja cicatrizando bem.</p>
+            <br>
+            <p>Por favor, entre em contato conosco para agendar um retorno. Estamos à disposição para qualquer ajuste que precise ser feito.</p>
+            <br>
+            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+            <p>Atenciosamente,</p>
+            <p>Equipe da InkDash</p>
+        """.format(username=username)
+        
+        message = MessageSchema(
+            subject="Retorno para Ajustes na Tatuagem - InkDash",
+            recipients=[emailusuario],
+            body=html,
+            subtype=MessageType.html
+        )
+        
+        # Envio do e-mail
+        await fm.send_message(message)
+    except Exception as e:
+        # Tratamento de exceções
+        print("Erro ao enviar e-mail:", e)

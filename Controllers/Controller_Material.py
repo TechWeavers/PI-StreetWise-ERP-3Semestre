@@ -169,7 +169,7 @@ class ControllerMaterial:
       materiais = list(materiais)
       for mat in materiais:
           if mat["quantidade"]<5:
-            materiais_faltantes.append(str({"nome":mat["nome"], "quantidade":mat["quantidade"]}))
+            materiais_faltantes.append(str({"nome":mat["nome"], "quantidade":mat["quantidade"], "valor_unitario":mat["valor_unitario"]}))
       
       if materiais_faltantes:
         return materiais_faltantes
