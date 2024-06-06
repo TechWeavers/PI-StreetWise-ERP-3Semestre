@@ -1,17 +1,11 @@
 from http.client import HTTPException
-from fastapi import Depends, FastAPI, Header,APIRouter
-from pydantic import BaseModel
-from starlette.responses import JSONResponse
-from routes.loginRoute import validar_token
-from services.email import EmailSchema, emailEsqueceuSenha
-from Controllers.Controller_user import ControllerUser
+from fastapi import Depends, FastAPI, Header,APIRouter,HTTPException,status
 from fastapi.middleware.cors import CORSMiddleware
-from Controllers.token import Token
 from Controllers.Controller_Agenda import Controller_Copia_Agendamento
 from datetime import datetime, timedelta
-from typing import Annotated
-from models.emailModel import emailClass
-from models.senhaModel import SenhaClass
+import schedule
+import time
+import asyncio
 from services.email import email24Depois,email24Antes,emailRetorno
 
 app = FastAPI()
@@ -24,6 +18,17 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
+
+"""async def executar_rotas():
+    try:
+        # Chame suas rotas aqui
+        await enviar_email_24_horas_depois()
+        await enviar_email_24_horas_antes()
+        await enviar_email_retorno()
+    except HTTPException as http_exception:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao enviar email automático para clientes")
+    
+schedule.every().day.at("02:56").do(asyncio.run, executar_rotas())"""
 
 @app.post("/email-24horas-depois")
 async def enviar_email_24_horas_depois(): 
@@ -118,3 +123,7 @@ async def enviar_email_retorno():
         raise HTTPException(500, f"Erro ao enviar o e-mail: {str(e)}")
 
 app.include_router(comunicacaoAPI)
+
+"""while True:
+    schedule.run_pending()
+    time.sleep(1)"""
