@@ -104,6 +104,7 @@ class Controller_Copia_Agendamento():
      future_events = []
      agendamentos = collection.find({})
      
+     
      contador = 0
      for event in agendamentos:
          
@@ -112,7 +113,9 @@ class Controller_Copia_Agendamento():
           start_time = parser.isoparse(start_time_str)
 
           if start_time > data_atual and contador<=6:
-            future_events.append({"summary":event["summary"], "description":event["description"],"date":start_time_str })
+            email = event['attendees'][0]['email']
+            cliente = ControllerCliente.getClienteAgendamento(email)
+            future_events.append({"summary":event["summary"], "description":event["description"],"date":start_time_str,"cliente":cliente["nome"]})
             contador+=1
 
      return future_events #retorna apenas os próximos 7 eventos
@@ -171,7 +174,7 @@ class Controller_Copia_Agendamento():
         event["_id"] = str(event["_id"])
         agendamentos_no_mes.append(event)
 
-      #valor_bruto_agendamentos = 0
+      valor_bruto_agendamentos = 0
       for event in agendamentos_no_mes:
         valor_bruto_agendamentos += event["preco"]
 
@@ -189,6 +192,9 @@ class Controller_Copia_Agendamento():
       return media
      except:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao carregar média do valor de agendamentos")
+     
+  def retornar_todos_agendamentos():
+     return collection.find({})
     
      
     
