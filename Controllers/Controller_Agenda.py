@@ -193,7 +193,7 @@ class Controller_Copia_Agendamento():
      except:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao carregar média do valor de agendamentos")
      
-  def retornar_todos_agendamentos():
+  def retornar_todos_agendamentos(self):
      return collection.find({})
     
      

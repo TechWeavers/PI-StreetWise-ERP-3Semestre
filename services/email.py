@@ -5,6 +5,9 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, EmailStr
 from starlette.responses import JSONResponse
 from Controllers.Controller_user import User
+from Controllers.Controller_Agenda import Controller_Copia_Agendamento
+from models.clienteModel import Cliente
+from datetime import datetime, timedelta
  
  
 from fastapi.middleware.cors import CORSMiddleware
@@ -108,17 +111,15 @@ async def senhaRedefinida(user: User):
 
 #Emails procedimentos
 
-async def email24Antes(user: User):
+async def email24Antes(email: str):
     try:
-        emailusuario = user["email"]
-        username = user["name"]
-        appointment_date = user["appointment_date"]  # Supondo que a data do agendamento está disponível no usuário
+        emailusuario = email
+       
         
         html = """
-            <h1>Olá, {username}</h1>
-            <p>Este é um lembrete do seu agendamento de tatuagem na InkDash.</p>
+            <h1>Olá,</h1>
+            <p>Este é um lembrete do seu agendamento de tatuagem na InkDash amanhã.</p>
             <br>
-            <p>Data do Agendamento: {appointment_date}</p>
             <br>
             <p>Estamos ansiosos para vê-lo!</p>
             <p>Se você tiver alguma dúvida ou precisar reagendar, por favor entre em contato conosco.</p>
@@ -126,7 +127,7 @@ async def email24Antes(user: User):
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
             <p>Equipe da InkDash</p>
-        """.format(username=username, appointment_date=appointment_date)
+        """
         
         message = MessageSchema(
             subject="Lembrete de Tatuagem Marcada - InkDash",
@@ -141,13 +142,13 @@ async def email24Antes(user: User):
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
 
-async def email24Depois(user: User):
+async def email24Depois(email: str):
     try:
-        emailusuario = user["email"]
-        username = user["name"]
+        emailusuario = email
+       
         
         html = """
-            <h1>Olá, {username}</h1>
+            <h1>Olá!</h1>
             <p>Esperamos que você esteja satisfeito com sua nova tatuagem feita na InkDash!</p>
             <br>
             <p>Gostaríamos de saber se deu tudo certo com o procedimento. Caso tenha alguma dúvida ou preocupação, por favor, não hesite em nos contatar.</p>
@@ -164,7 +165,7 @@ async def email24Depois(user: User):
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
             <p>Equipe da InkDash</p>
-        """.format(username=username)
+        """
         
         message = MessageSchema(
             subject="Confirmação e Cuidados Pós-Tatuagem - InkDash",
@@ -179,13 +180,13 @@ async def email24Depois(user: User):
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
 
-async def emailRetorno(user: User):
+async def emailRetorno(email: str):
     try:
-        emailusuario = user["email"]
-        username = user["name"]
+        emailusuario =email
+        
         
         html = """
-            <h1>Olá, {username}</h1>
+            <h1>Olá,</h1>
             <p>Esperamos que você esteja gostando da sua nova tatuagem feita na InkDash!</p>
             <br>
             <p>Como parte do nosso plano de cuidados, gostaríamos de lembrá-lo sobre a possibilidade de realizar ajustes na sua tatuagem, caso seja necessário.</p>
@@ -196,7 +197,7 @@ async def emailRetorno(user: User):
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
             <p>Equipe da InkDash</p>
-        """.format(username=username)
+        """
         
         message = MessageSchema(
             subject="Retorno para Ajustes na Tatuagem - InkDash",
@@ -210,3 +211,4 @@ async def emailRetorno(user: User):
     except Exception as e:
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
+
