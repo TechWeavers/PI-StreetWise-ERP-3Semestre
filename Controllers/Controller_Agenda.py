@@ -166,17 +166,19 @@ class Controller_Copia_Agendamento():
 
     try:
       agendamentos = collection.find(filtro)
+      valor_bruto_agendamentos = 0
+      
+      
 
       for event in agendamentos:
         event["_id"] = str(event["_id"])
         agendamentos_no_mes.append(event)
 
-      #valor_bruto_agendamentos = 0
       for event in agendamentos_no_mes:
         valor_bruto_agendamentos += event["preco"]
 
       return valor_bruto_agendamentos
-    
+      
     except:
        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao carregar valor dos agendamentos no mês")
     
