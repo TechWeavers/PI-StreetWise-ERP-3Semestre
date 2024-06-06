@@ -20,6 +20,7 @@ app.add_middleware(
 @agendaAPI.post("/novo-agendamento", tags=["agendamentos"])
 async def createAgendamento(evento:Agendamento,Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
+    print(evento)
     return controller.insert_event(evento)
 
 @agendaAPI.get("/listar-agendamentos", tags=["agendamentos"])

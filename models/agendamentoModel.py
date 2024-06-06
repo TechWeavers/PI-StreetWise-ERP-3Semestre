@@ -31,5 +31,5 @@ class Agendamento(BaseModel):
  hora_inicio:str
  hora_fim:str
  email_convidado: str
- preco: float | None = None
+ preco: float 
  

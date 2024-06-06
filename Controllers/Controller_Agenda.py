@@ -28,6 +28,7 @@ class Controller_Copia_Agendamento():
     try:
          collection.insert_one(dict(agendamento)) 
          self.quantidade_agendamentos+=1
+         print(agendamento)
     except HTTPException:
        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="cliente não encontrado nos registros do sistema")
 
@@ -170,7 +171,7 @@ class Controller_Copia_Agendamento():
         event["_id"] = str(event["_id"])
         agendamentos_no_mes.append(event)
 
-      valor_bruto_agendamentos = 0
+      #valor_bruto_agendamentos = 0
       for event in agendamentos_no_mes:
         valor_bruto_agendamentos += event["preco"]
 

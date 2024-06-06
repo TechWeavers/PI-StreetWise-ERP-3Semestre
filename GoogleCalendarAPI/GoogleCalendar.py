@@ -77,6 +77,7 @@ class GoogleCalendar:
                 created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
                 #print('Event created:', created_event.get('htmlLink'))
                 copia_agendamento = event.copy()
+                copia_agendamento["preco"] = evento.preco
                 copia_agendamento["id"] = created_event['id']
                 controller_agendamento = Controller_Copia_Agendamento()
                 controller_agendamento.inserir_agendamento(copia_agendamento)
