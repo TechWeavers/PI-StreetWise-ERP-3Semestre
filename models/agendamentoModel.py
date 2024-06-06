@@ -1,3 +1,4 @@
+from typing import Dict
 from pydantic import BaseModel
 
 """event = {
@@ -24,12 +25,12 @@ from pydantic import BaseModel
               },
           }"""
 class Agendamento(BaseModel):
- id: str | None = None
- nome: str
- descricao: str
- data: str
- hora_inicio:str
- hora_fim:str
- email_convidado: str
- preco: float 
- 
+    id: str | None = None
+    nome: str
+    descricao: str
+    data: str
+    hora_inicio: str
+    hora_fim: str
+    email_convidado: str
+    preco: float
+    material_utilizado: Dict[str, int] | None = None
