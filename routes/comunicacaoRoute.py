@@ -1,12 +1,9 @@
 from datetime import datetime, timedelta
-import schedule
-import time
-import asyncio
 from fastapi import FastAPI, APIRouter, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from Controllers.Controller_Agenda import Controller_Copia_Agendamento
 from services.email import email24Depois, email24Antes, emailRetorno
-import uvicorn
+
 
 app = FastAPI()
 comunicacaoAPI = APIRouter()
@@ -39,16 +36,19 @@ async def enviar_email_24_horas_depois():
         for event in agendamentos:
             data_evento = str(event["start"]["dateTime"]).split("T")[0]
 
-            print(data_evento)
-            print(data_ontem_formatada)
+            print("data do evento",data_evento)
+            print("data de ontem",data_ontem_formatada)
             if data_evento == data_ontem_formatada:
               email_cliente = event["attendees"][0]["email"]
               await email24Depois(email_cliente)
+              print("deu certo")
+            else:
+                print("nao deu certo")
+                
            
-    except HTTPException as http_exception:
-        raise http_exception
-    except Exception as e:
-        raise HTTPException(500, f"Erro ao enviar o e-mail: {str(e)}")
+    
+    except Exception:
+       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Não foram encontrados agendamentos nda data de ontem")
 
 @app.post("/email-24horas-antes")
 async def enviar_email_24_horas_antes(): 
@@ -75,11 +75,12 @@ async def enviar_email_24_horas_antes():
             if data_evento == data_amanha_formatada:
               email_cliente = event["attendees"][0]["email"]
               await email24Antes(email_cliente)
+            else:
+                print("nao deu certo")
+                
            
-    except HTTPException as http_exception:
-        raise http_exception
-    except Exception as e:
-        raise HTTPException(500, f"Erro ao enviar o e-mail: {str(e)}")
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Não foram encontrados agendamentos na data de amanhã")
     
 
 @app.post("/email-retorno")

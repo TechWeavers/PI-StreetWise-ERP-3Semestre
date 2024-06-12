@@ -191,7 +191,7 @@ class Controller_Copia_Agendamento():
       valor_bruto = self.valorAgendamentosNoMes()
       quantidade =self.calcularQuantidadeAgendamentosnoMes()
       media = valor_bruto/quantidade
-      return media
+      return round(media,2)
      except:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Erro ao carregar média do valor de agendamentos")
      
